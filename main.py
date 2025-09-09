@@ -18,8 +18,8 @@ def home():
     return {
         
         "Live": {
-            "set_index": Live_set.strip(\n),
-            "value_index": Liver_value.strip(\n),
+            "set_index": Live_set.strip(),
+            "value_index": Liver_value.strip(),
             "fetched_at": int(time.time())
         }
     }
