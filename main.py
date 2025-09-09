@@ -13,8 +13,8 @@ def home():
     table = soup.find_all("table")[1]
     set_index=table.find_all("div")[4]
     value_index=table.find_all("div")[6]
-    Live_set=set_index.rstrip()
-    Liver_value=value_index.rstrip()
+    Live_set=set_index.strip()
+    Liver_value=value_index.strip()
     return {
         "ok": True,
         "Live": {
