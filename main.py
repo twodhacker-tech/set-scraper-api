@@ -7,12 +7,6 @@ app = FastAPI()
 
 @app.get("/")
 def home():
-    return {
-        "Hackingtwod": "Hacking TwoD"
-    }
-
-@app.get("/api/set")
-def get_set_index():
     url = "https://www.set.or.th/en/market/product/stock/overview"   
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
