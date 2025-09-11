@@ -26,7 +26,7 @@ jobs:
       - name: Daily reset
         if: github.event.schedule == '30 2 * * *'
         run: |
-          echo '[{"datetime":"'$(date -u +"%Y-%m-%d %H:%M:%S")'"},{"am_time":"12:01","set_index":"--","value_index":"--"},{"pm_time":"16:30","set_index":"--","value_index":"--"}]' > set_history.json
+          echo '[{"am_time":"12:01","set":"--","value":"--"},{"pm_time":"16:30","set":"--","value":"--"}]' > set_history.json
 
       # 12:01 or 16:30 → Replace placeholder (if still --) or append
       - name: Fetch live data
