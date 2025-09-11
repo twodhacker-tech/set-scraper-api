@@ -27,6 +27,6 @@ return {
         "live": {
             "set": Live_set.strip(),
             "value": Live_value.strip()},
-        "History": [{"am":"12:01","set":"--","value":"--"},{"pm":"4:30","set":"--","value":"--"}]
+        "History": [{"am":"12:01","set":"--","value":"--"},{"pm":"4:30","set":"--","value":"--"}],
         "fetched_at": int(time.time())
         }
