@@ -20,7 +20,7 @@ def Twod_Live():
     now_mmt = datetime.now(MMT)
     
     
- @app.get("/api/set")
+ @app.get("/")
 def history_data():
     live = Twod_Live()
     history = []
