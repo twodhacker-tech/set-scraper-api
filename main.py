@@ -20,18 +20,15 @@ def Twod_Live():
     now_mmt = datetime.now(MMT)
     
     
-  
-        
+ @app.get("/api/set")
+def history_data():
+    live = Twod_Live()
+    history = []
         if os.path.exists("ResultsHistory.json"):
             with open("ResultHistory.json","r",enxoding="utf-8") as f:
                 history = json.load(f)
           return {
-        
-        "Live": {"date":now_mmt.strftime("%Y-%m-%d"),
-                 "time":now_mmt.strftime("%H:%M:%S"),
-            "live_set": Live_set.strip(),
-            "live_value": Liver_value.strip(),
-            "Results":history,
-            "fetched_at": int(time.time())
-                }
+              "live": live,
+              "history": history     
+      
     }
