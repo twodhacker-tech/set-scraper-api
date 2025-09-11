@@ -21,13 +21,11 @@ def Twod_Live():
     Liver_value=value_index.string
     live= Twod_Live()
     now_mmt = datetime.now(MMT)
-    
-return {
+    return {
        "date":now_mmt.strftime("%d-%m-%Y"),
        "time":now_mmt.strftime("%H:%M:%S"),
         "live": {
             "set": Live_set.strip(),
             "value": Live_value.strip()},
-        "History": history,
         "fetched_at": int(time.time())
         }
