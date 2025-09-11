@@ -21,8 +21,6 @@ def Twod_Live():
     
     
   
-@app.get("/api/set")
-    def SET Daily Jobs():
         ResultsHistory=[]
         if os.path.exists("set_history.json"):
             with open("set_history.json","r",enxoding="utf-8") as f:
