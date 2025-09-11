@@ -3,10 +3,8 @@ from datetime import datetime
 from pytz import timezone
 import requests,json,os
 from bs4 import BeautifulSoup
-
 app = FastAPI()
 MMT = timezone("Asia,Yangon")
-
 @app.get("/")
 def history_data():
         if os.path.exists("ResultsHistory.json"):
@@ -23,13 +21,12 @@ def Twod_Live():
     Liver_value=value_index.string
     now_mmt = datetime.now(MMT)
     live= Twod_Live()
-
-         return {
-                 "date":now_mmt.strftime("%d-%m-%Y"),
-                 "time":now_mmt.strftime("%H:%M:%S"),
-              "live": {
+return {
+       "date":now_mmt.strftime("%d-%m-%Y"),
+       "time":now_mmt.strftime("%H:%M:%S"),
+        "live": {
             "set": Live_set.strip(),
             "value": Live_value.strip()},
-              "History": [{"am":"12:01","set":"--","value":"--"},{"pm":"4:30","set":"--","value":"--"}]
-            "fetched_at": int(time.time())
-                  }
+        "History": [{"am":"12:01","set":"--","value":"--"},{"pm":"4:30","set":"--","value":"--"}]
+        "fetched_at": int(time.time())
+        }
