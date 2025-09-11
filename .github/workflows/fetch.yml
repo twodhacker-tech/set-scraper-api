@@ -1,0 +1,51 @@
+name: SET Daily Jobs
+
+on:
+  schedule:
+    # 09:00 MMT = 02:30 UTC
+    - cron: "30 2 * * *"
+    # 12:01 MMT = 05:31 UTC
+    - cron: "31 5 * * *"
+    # 16:30 MMT = 10:00 UTC
+    - cron: "0 10 * * *"
+
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Prepare history file
+        run: |
+          if [ ! -f set_history.json ]; then
+            echo "[]" > set_history.json
+          fi
+
+      # 09:00 MMT → Clear + insert placeholder
+      - name: Daily reset
+        if: github.event.schedule == '30 2 * * *'
+        run: |
+          echo '[{"datetime":"'$(date -u +"%Y-%m-%d %H:%M:%S")'"},{"am_time":"12:01","set_index":"--","value_index":"--"},{"pm_time":"16:30","set_index":"--","value_index":"--"}]' > set_history.json
+
+      # 12:01 or 16:30 → Replace placeholder (if still --) or append
+      - name: Fetch live data
+        if: github.event.schedule != '30 2 * * *'
+        run: |
+          curl -s https://hackingtwod.onrender.com/api/set > result.json
+
+          if jq -e '.[0].set_index == "--"' set_history.json > /dev/null; then
+            # replace first placeholder
+            jq ".[0] = $(cat result.json)" set_history.json > tmp.json && mv tmp.json set_history.json
+          else
+            # append new result
+            jq ". + [$(cat result.json)]" set_history.json > tmp.json && mv tmp.json set_history.json
+          fi
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add set_history.json
+          git commit -m "Update SET data [skip ci]" || echo "No changes"
+          git push
