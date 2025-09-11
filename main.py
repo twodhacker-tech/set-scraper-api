@@ -25,6 +25,11 @@ def Twod_Live():
     live= Twod_Live()
 
          return {
-              "live": live,
-              "history": history     
-          }
+                 "date":now_mmt.strftime("%d-%m-%Y"),
+                 "time":now_mmt.strftime("%H:%M:%S"),
+              "live": {
+            "set": Live_set.strip(),
+            "value": Live_value.strip()},
+              "History": [{"am":"12:01","set":"--","value":"--"},{"pm":"4:30","set":"--","value":"--"}]
+            "fetched_at": int(time.time())
+                  }
