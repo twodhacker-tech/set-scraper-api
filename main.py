@@ -19,11 +19,7 @@ def Twod_Live():
     live= Twod_Live()
     now_mmt = datetime.now(MMT)
 
-        
-def history_data():
-if os.path.exists("ResultsHistory.json"):
-        with open("ResultHistory.json","r",enxoding="utf-8") as f:
-                history = json.load(f)
+    
     return {
        "date":now_mmt.strftime("%d-%m-%Y"),
        "time":now_mmt.strftime("%H:%M:%S"),
