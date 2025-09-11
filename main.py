@@ -21,7 +21,7 @@ def Twod_Live():
     
     
   
-        ResultsHistory=[]
+        history=[]
         if os.path.exists("ResultsHistory.json"):
             with open("ResultHistory.json","r",enxoding="utf-8") as f:
                 history = json.load(f)
