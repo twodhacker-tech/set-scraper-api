@@ -27,5 +27,4 @@ def history_data():
           return {
               "live": live,
               "history": history     
-      
-    }
+          }
