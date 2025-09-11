@@ -6,8 +6,19 @@ from bs4 import BeautifulSoup
 
 app = FastAPI()
 MMT = timezone("Asia,Yangon")
-
+def history_data():
+    live = Twod_Live()
+    history = []
+        if os.path.exists("ResultsHistory.json"):
+            with open("ResultHistory.json","r",enxoding="utf-8") as f:
+                history = json.load(f)
 @app.get("/")
+def history_data():
+    live = Twod_Live()
+    history = []
+        if os.path.exists("ResultsHistory.json"):
+            with open("ResultHistory.json","r",enxoding="utf-8") as f:
+                history = json.load(f)
 def Twod_Live():
     url = "https://www.set.or.th/en/market/product/stock/overview"   
     response = requests.get(url)
@@ -18,12 +29,7 @@ def Twod_Live():
     Live_set=set_index.string
     Liver_value=value_index.string
     now_mmt = datetime.now(MMT)
-def history_data():
-    live = Twod_Live()
-    history = []
-        if os.path.exists("ResultsHistory.json"):
-            with open("ResultHistory.json","r",enxoding="utf-8") as f:
-                history = json.load(f)
+
           return {
               "live": live,
               "history": history     
