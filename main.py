@@ -18,9 +18,6 @@ def Twod_Live():
     Live_set=set_index.string
     Liver_value=value_index.string
     now_mmt = datetime.now(MMT)
-    
-    
- @app.get("/")
 def history_data():
     live = Twod_Live()
     history = []
