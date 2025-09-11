@@ -5,11 +5,8 @@ import requests,json,os
 from bs4 import BeautifulSoup
 app = FastAPI()
 MMT = timezone("Asia,Yangon")
+
 @app.get("/")
-def history_data():
-        if os.path.exists("ResultsHistory.json"):
-            with open("ResultHistory.json","r",enxoding="utf-8") as f:
-                history = json.load(f)
 def Twod_Live():
     url = "https://www.set.or.th/en/market/product/stock/overview"   
     response = requests.get(url)
@@ -21,6 +18,12 @@ def Twod_Live():
     Liver_value=value_index.string
     live= Twod_Live()
     now_mmt = datetime.now(MMT)
+
+        
+def history_data():
+if os.path.exists("ResultsHistory.json"):
+        with open("ResultHistory.json","r",enxoding="utf-8") as f:
+                history = json.load(f)
     return {
        "date":now_mmt.strftime("%d-%m-%Y"),
        "time":now_mmt.strftime("%H:%M:%S"),
