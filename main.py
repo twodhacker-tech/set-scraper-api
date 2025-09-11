@@ -19,14 +19,15 @@ def Twod_Live():
     value_index=table.find_all("div")[6]
     Live_set=set_index.string
     Liver_value=value_index.string
-    now_mmt = datetime.now(MMT)
     live= Twod_Live()
+    now_mmt = datetime.now(MMT)
+    
 return {
        "date":now_mmt.strftime("%d-%m-%Y"),
        "time":now_mmt.strftime("%H:%M:%S"),
         "live": {
             "set": Live_set.strip(),
             "value": Live_value.strip()},
-        "History": [{"am":"12:01","set":"--","value":"--"},{"pm":"4:30","set":"--","value":"--"}],
+        "History": history,
         "fetched_at": int(time.time())
         }
