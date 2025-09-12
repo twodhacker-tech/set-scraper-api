@@ -5,8 +5,8 @@ import requests,json,os
 from bs4 import BeautifulSoup
 
 @app.get("/")
-def Twod_Live():
-    url = "https://www.set.or.th/en/market/product/stock/overview"   
+ def Twod_Live():
+    url =     "https://www.set.or.th/en/market/product/stock/overview"   
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
     table = soup.find_all("table")[1]
