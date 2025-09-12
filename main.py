@@ -14,7 +14,6 @@ app=FastAPI()
     value_index=table.find_all("div")[6]
     Live_set=set_index.string
     Liver_value=value_index.string
-    live= Twod_Live()
     
     return {
         "live": {
