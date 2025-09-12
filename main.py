@@ -4,7 +4,7 @@ from pytz import timezone
 import requests,json,os
 from bs4 import BeautifulSoup
 app = FastAPI()
-MMT = pytz.timezone("Asia/Yangon")
+MMT = timezone("Asia/Yangon")
 
 @app.get("/")
 def Twod_Live():
