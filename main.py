@@ -21,7 +21,7 @@ def twod():
 
         "Live": {
             "set": Live_set.strip(),
-            "value": Liver_value.strip(),
+            "value": Live_value.strip(),
             "fetched_at": int(time.time())
         }
     }
