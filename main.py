@@ -8,7 +8,7 @@ import time
 app = FastAPI()
 
 @app.get("/")
-def home():
+def twod():
     url = "https://www.set.or.th/en/market/product/stock/overview"   
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
