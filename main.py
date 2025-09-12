@@ -3,8 +3,6 @@ from datetime import datetime
 from pytz import timezone
 import requests,json,os
 from bs4 import BeautifulSoup
-app = FastAPI()
-MMT = timezone("Asia/Yangon")
 
 @app.get("/")
 def Twod_Live():
@@ -17,12 +15,8 @@ def Twod_Live():
     Live_set=set_index.string
     Liver_value=value_index.string
     live= Twod_Live()
-    now_mmt = datetime.now(MMT)
-
     
     return {
-       "date":now_mmt.strftime("%d-%m-%Y"),
-       "time":now_mmt.strftime("%H:%M:%S"),
         "live": {
             "set": Live_set.strip(),
             "value": Live_value.strip()},
