@@ -3,7 +3,7 @@ from datetime import datetime
 from pytz import timezone
 import requests,json,os
 from bs4 import BeautifulSoup
-
+app=FastAPI()
 @app.get("/")
  def Twod_Live():
     url =     "https://www.set.or.th/en/market/product/stock/overview"   
