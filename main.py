@@ -5,7 +5,7 @@ import requests,json,os
 from bs4 import BeautifulSoup
 app=FastAPI()
 @app.get("/")
- def twod_live():
+ def home():
     url =     "https://www.set.or.th/en/market/product/stock/overview"   
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
