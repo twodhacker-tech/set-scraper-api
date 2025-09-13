@@ -30,7 +30,7 @@ def home():
     extract_value = float(clean_value)
     last = str(int(extract_value))[-1] 
 
-    twod_live = int(f"{top}{last}")
+    twod_live = str(int(f"{top}{last}"))
 
     
 
