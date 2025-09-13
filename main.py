@@ -7,8 +7,8 @@ from bs4 import BeautifulSoup
 app=FastAPI()
 @app.get("/")
 def fetch_live_data():
-    url = "THA_LIN"
-    response = requests.get(url)
+    LINK_D = "THA_LIN"
+    response = requests.get(LINK_D)
     soup = BeautifulSoup(response.text, "html.parser")
 
     table = soup.find_all("table")[1]
