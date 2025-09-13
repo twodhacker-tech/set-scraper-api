@@ -6,7 +6,7 @@ from bs4 import BeautifulSoup
 app = FastAPI()
 
 def fetch_live_data():
-    url = "THA_LIN"
+    LINK_D = "THA_LIN"
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
 
