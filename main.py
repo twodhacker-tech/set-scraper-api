@@ -22,8 +22,8 @@ def twod():
     live_set = set_index.get_text(strip=True)
     live_value = value_index.get_text(strip=True)
     
-    top=str(live_set)[-1]
-    last=str(int(live_value))[-1]
+    top=str("live_set")[-1]
+    last=str(int("live_value"))[-1]
     twod_live=int(f"{top}{last}")
 
     # Myanmar Timezone
