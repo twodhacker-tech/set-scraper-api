@@ -7,7 +7,7 @@ from bs4 import BeautifulSoup
 app=FastAPI()
 @app.get("/")
 def fetch_live_data():
-    url = "https://www.set.or.th/en/market/product/stock/overview"
+    url = "THA_LIN"
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
 
