@@ -31,8 +31,6 @@ def fetch_live_data():
         "date": mm_time.strftime("%Y-%m-%d"),
         "time": mm_time.strftime("%H:%M:%S"),
         "Live": {
-            "twod_top": top,
-            "twod_last": last,
             "twod": twod_live,
             "set": live_set,
             "value": live_value,
