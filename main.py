@@ -20,6 +20,10 @@ def twod():
 
     live_set = set_index.get_text(strip=True)
     live_value = value_index.get_text(strip=True)
+    
+    top=str(live_set)[-1]
+    last=str(int(live_value))[-1]
+    twod_live=int(f"{top}{last}")
 
     # Myanmar Timezone
     mm_time = datetime.now(pytz.timezone("Asia/Yangon"))
@@ -30,6 +34,7 @@ def twod():
         "date": mm_date,
         "time": mm_time_str,
         "Live": {
+            "twod":twod_live,
             "set": live_set,
             "value": live_value,
             "fetched_at": int(time.time())
