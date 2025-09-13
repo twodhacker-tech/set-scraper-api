@@ -1,15 +1,20 @@
 from fastapi import FastAPI
 from datetime import datetime
-import pytz, time, requests
+import pytz
+import time
+import requests
 from bs4 import BeautifulSoup
+import math
 
 app = FastAPI()
 
-def fetch_live_data():
-    url = "https://www.set.or.th/en/market/product/stock/overview"
+@app.get("/")
+def home():
+    url = "https://www.set.or.th/en/market/product/stock/overview"   
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
-
+    
+    # Table data
     table = soup.find_all("table")[1]
     set_index = table.find_all("div")[4]
     value_index = table.find_all("div")[6]
@@ -18,27 +23,31 @@ def fetch_live_data():
     live_value = value_index.get_text(strip=True)
 
     clean_set = live_set.replace(",", "")
-    top = str(float(clean_set))[-1]
+    extract_set = float(clean_set)
+    top = str(extract_set)[-1]  
 
     clean_value = live_value.replace(",", "")
-    last = str(int(float(clean_value)))[-1]
+    extract_value = float(clean_value)
+    last = str(int(extract_value))[-1] 
 
     twod_live = str(int(f"{top}{last}"))
 
+    
+
+# Myanmar Timezone
     mm_time = datetime.now(pytz.timezone("Asia/Yangon"))
+    mm_date = mm_time.strftime("%Y-%m-%d")
+    mm_time_str = mm_time.strftime("%H:%M:%S")
+
     return {
-        "date": mm_time.strftime("%Y-%m-%d"),
-        "time": mm_time.strftime("%H:%M:%S"),
+        "date": mm_date,
+        "time": mm_time_str,
         "Live": {
             "twod_top": top,
             "twod_last": last,
-            "twod": twod_live,
+            "twod":twod_live,
             "set": live_set,
             "value": live_value,
             "fetched_at": int(time.time())
         }
     }
-
-@app.get("/")
-def home():
-    return fetch_live_data()
