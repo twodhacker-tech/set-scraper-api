@@ -22,9 +22,13 @@ def twod():
     live_set = set_index.get_text(strip=True)
     live_value = value_index.get_text(strip=True)
     
-    top=str("live_set")[-1]
-    last=str(int("live_value"))[-1]
-    twod_live=int(f"{top}{last}")
+top = live_set[-1] if live_set and live_set[-1].isdigit() else "0"
+
+value_clean = live_value.replace(",", "").split(".")[0]
+last = value_clean[-1] if value_clean and value_clean[-1].isdigit() else "0"
+
+# 2D
+twod_live = int(f"{top}{last}") if top.isdigit() and last.isdigit() else None
 
     # Myanmar Timezone
     mm_time = datetime.now(pytz.timezone("Asia/Yangon"))
