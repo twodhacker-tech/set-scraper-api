@@ -1,40 +1,4 @@
-name: Fetch SET Data
-
 on:
   schedule:
-    - cron: "30 2 * * *"   # 09:00 MMT clear (02:30 UTC)
-    - cron: "31 5 * * *"   # 12:01 MMT (05:31 UTC)
-    - cron: "0 10 * * *"   # 16:30 MMT (09:00 UTC)
-  workflow_dispatch:
-
-jobs:
-  run-scraper:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: Install dependencies
-        run: pip install requests beautifulsoup4 pytz
-
-      - name: Run scraper
-        run: |
-          if [ "${{ github.event.schedule }}" == "30 2 * * *" ]; then
-            python main.py clear
-          elif [ "${{ github.event.schedule }}" == "31 5 * * *" ]; then
-            python main.py fetch12
-          elif [ "${{ github.event.schedule }}" == "0 10 * * *" ]; then
-            python main.py fetch16
-          fi
-
-      - name: Commit changes
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "actions@github.com"
-          git add ResultsHistory.json
-          git commit -m "Update SET results [skip ci]" || echo "No changes"
-          git push
+    - cron: "31 5 * * *"   # 12:01 MMT
+    - cron: "0 10 * * *"   # 16:30 MMT
