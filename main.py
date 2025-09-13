@@ -5,6 +5,7 @@ import pytz
 from bs4 import BeautifulSoup
 
 app=FastAPI()
+@app.get("/")
 def fetch_live_data():
     url = "https://www.set.or.th/en/market/product/stock/overview"
     response = requests.get(url)
