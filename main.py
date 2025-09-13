@@ -43,7 +43,7 @@ twod_live = int(f"{top}{last}")
         "date": mm_date,
         "time": mm_time_str,
         "Live": {
-            "twod":twod_live,
+            "live_twod":twod_live,
             "set": live_set,
             "value": live_value,
             "fetched_at": int(time.time())
