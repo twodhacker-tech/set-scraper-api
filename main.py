@@ -24,7 +24,7 @@ def home():
 
     clean_set = live_set.replace(",", "")
     extract_set = float(clean_set)
-    top = str(int(extract_set))[-1]  
+    top = str(extract_set)[-1]  
 
     clean_value = live_value.replace(",", "")
     extract_value = float(clean_value)
