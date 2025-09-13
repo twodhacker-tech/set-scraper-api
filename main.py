@@ -4,7 +4,6 @@ import pytz
 import time
 import requests
 from bs4 import BeautifulSoup
-import math
 
 app = FastAPI()
 
@@ -21,8 +20,6 @@ def twod():
 
     live_set = set_index.get_text(strip=True)
     live_value = value_index.get_text(strip=True)
-    
-
 
     # Myanmar Timezone
     mm_time = datetime.now(pytz.timezone("Asia/Yangon"))
@@ -33,7 +30,6 @@ def twod():
         "date": mm_date,
         "time": mm_time_str,
         "Live": {
-           
             "set": live_set,
             "value": live_value,
             "fetched_at": int(time.time())
