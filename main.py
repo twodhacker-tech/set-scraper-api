@@ -1,13 +1,10 @@
 from fastapi import FastAPI
 from datetime import datetime
-import pytz, time, json, os, base64, requests
+import pytz, time, requests
 from bs4 import BeautifulSoup
 
 app = FastAPI()
 
-# =========================
-# Scraper function
-# =========================
 def fetch_live_data():
     url = "https://www.set.or.th/en/market/product/stock/overview"
     response = requests.get(url)
@@ -42,51 +39,6 @@ def fetch_live_data():
         }
     }
 
-# =========================
-# API endpoint
-# =========================
 @app.get("/")
 def home():
     return fetch_live_data()
-
-# =========================
-# GitHub commit function
-# =========================
-def save_to_github(new_data):
-    token = os.getenv("TICKET_SC")
-    repo = os.getenv("MY_T")
-    path = "ResultsHistory.json"
-
-    headers = {"Authorization": f"token {token}"}
-    api_url = f"https://api.github.com/repos/{repo}/contents/{path}"
-
-    r = requests.get(api_url, headers=headers)
-    if r.status_code == 200:
-        content = r.json()
-        sha = content["sha"]
-        old_data = json.loads(base64.b64decode(content["content"]).decode())
-    else:
-        sha = None
-        old_data = []
-
-    old_data.append(new_data)
-    new_content = json.dumps(old_data, indent=4, ensure_ascii=False)
-
-    commit_data = {
-        "message": f"Update ResultsHistory.json at {new_data['time']}",
-        "content": base64.b64encode(new_content.encode()).decode(),
-        "sha": sha
-    }
-    r = requests.put(api_url, headers=headers, data=json.dumps(commit_data))
-
-    if r.status_code in [200, 201]:
-        print("✅ Commit success")
-    else:
-        print("❌ Commit failed:", r.text)
-
-# =========================
-# Run manually (for cronjob / Actions)
-# =========================
-if __name__ == "__main__":
-    data = fetch_live_data()
-    save_to_github(data)
