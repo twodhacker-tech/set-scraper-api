@@ -1,8 +1,10 @@
+from fastapi import FastAPI
 import os, json, base64, time, requests
 from datetime import datetime
 import pytz
 from bs4 import BeautifulSoup
 
+from fastapi import FastAPI
 def fetch_live_data():
     url = "https://www.set.or.th/en/market/product/stock/overview"
     response = requests.get(url)
