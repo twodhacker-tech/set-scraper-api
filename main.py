@@ -4,7 +4,7 @@ from datetime import datetime
 import pytz
 from bs4 import BeautifulSoup
 
-from fastapi import FastAPI
+app=FastAPI()
 def fetch_live_data():
     LINK_D = "THA_LIN"
     response = requests.get(LINK_D)
