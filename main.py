@@ -22,15 +22,15 @@ def twod():
     live_set = set_index.get_text(strip=True)
     live_value = value_index.get_text(strip=True)
 
-    clean_set = live_set.replace(",","")
-    extract_set = float(clean_set)
-    top = str(extract_set)[-1]
- 
-     clean_value = live_value.replace(",","")
-     extract_value = float(clean_value)
-     last = str(int(extract_value))[-1]
-    
-       twod_live=int(f"{top}{last}")
+   clean_set = live_set.replace(",", "")
+extract_set = float(clean_set)
+top = str(int(extract_set))[-1]  
+
+clean_value = live_value.replace(",", "")
+extract_value = float(clean_value)
+last = str(int(extract_value))[-1] 
+
+twod_live = int(f"{top}{last}")
 
     
 
