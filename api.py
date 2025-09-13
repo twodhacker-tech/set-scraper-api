@@ -7,7 +7,7 @@ app = FastAPI()
 
 def fetch_live_data():
     LINK_D = "THA_LIN"
-    response = requests.get(url)
+    response = requests.get(LINK_D)
     soup = BeautifulSoup(response.text, "html.parser")
 
     table = soup.find_all("table")[1]
