@@ -43,7 +43,9 @@ def home():
         "date": mm_date,
         "time": mm_time_str,
         "Live": {
-            "twod": twod_live,
+            "twod_top": top,
+            "twod_last": last,
+            "twod":twod_live,
             "set": live_set,
             "value": live_value,
             "fetched_at": int(time.time())
