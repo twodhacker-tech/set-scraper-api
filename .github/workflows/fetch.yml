@@ -19,6 +19,6 @@ jobs:
         run: pip install requests beautifulsoup4 pytz
       - name: Run script
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GITHUB_REPO: ${{ secrets.GITHUB_REPO }}
+          GITHUB_TOKEN: ${{ secrets.TICKET_SC }}
+          GITHUB_REPO: ${{ secrets.MY_T }}
         run: python main.py
