@@ -9,7 +9,7 @@ import math
 app = FastAPI()
 
 @app.get("/")
-def twod():
+def home():
     url = "https://www.set.or.th/en/market/product/stock/overview"   
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
@@ -22,15 +22,15 @@ def twod():
     live_set = set_index.get_text(strip=True)
     live_value = value_index.get_text(strip=True)
 
-   clean_set = live_set.replace(",", "")
-extract_set = float(clean_set)
-top = str(int(extract_set))[-1]  
+    clean_set = live_set.replace(",", "")
+    extract_set = float(clean_set)
+    top = str(int(extract_set))[-1]  
 
-clean_value = live_value.replace(",", "")
-extract_value = float(clean_value)
-last = str(int(extract_value))[-1] 
+    clean_value = live_value.replace(",", "")
+    extract_value = float(clean_value)
+    last = str(int(extract_value))[-1] 
 
-twod_live = int(f"{top}{last}")
+    twod_live = int(f"{top}{last}")
 
     
 
@@ -43,7 +43,7 @@ twod_live = int(f"{top}{last}")
         "date": mm_date,
         "time": mm_time_str,
         "Live": {
-            "live_twod":twod_live,
+            "twod": twod_live,
             "set": live_set,
             "value": live_value,
             "fetched_at": int(time.time())
