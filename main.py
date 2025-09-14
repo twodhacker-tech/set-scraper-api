@@ -30,6 +30,9 @@ def fetch_live_data():
     return {
         "date": mm_time.strftime("%Y-%m-%d"),
         "time": mm_time.strftime("%H:%M:%S"),
+        "hour": mm_time.strftime("%H"),
+        "minutes": mm_time.strftime("%M"),
+        "second": mm_time.strftime("%S"),
         "Live": {
             "twod": twod_live,
             "set": live_set,
