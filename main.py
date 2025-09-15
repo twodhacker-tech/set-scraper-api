@@ -80,16 +80,16 @@ def api_data():
 
 @app.route("/")
 def root():
-    return jsonify({"date": mm_time.strftime("%Y-%m-%d"),
+    return jsonify({
+        "date": mm_time.strftime("%Y-%m-%d"),
         "time": mm_time.strftime("%H:%M:%S"),
-        "hour": mm_time.strftime("%H"),
-        "minutes": mm_time.strftime("%M"),
-        "second": mm_time.strftime("%S"),
-        "live": {"twod":"--","set":"--","value":"--","fetched_at":0},
-        "results": {
-            "12:01":{"twod":"--","set":"--","value":"--"},
-            "16:30":{"twod":"--","set":"--","value":"--"}
-        })
+        "live": {
+            "twod": twod_live,
+            "set": live_set,
+            "value": live_value,
+            "fetched_at": int(time.time())
+        }
+    })
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
