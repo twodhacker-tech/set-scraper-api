@@ -26,14 +26,14 @@ def load_data():
             "fetched_at": int(time.time())
         },
   "results": {"12:01":{
-            "twod": --,
-            "set": --,
-            "value": --
+            "twod": "--",
+            "set": "--",
+            "value": "--"
         },
              "4:30":{
-            "twod": --,
-            "set": --,
-            "value": --
+            "twod": "--",
+            "set": "--",
+            "value": "--"
         }
 }
 }
