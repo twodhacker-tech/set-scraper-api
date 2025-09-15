@@ -5,20 +5,17 @@ import os
 import time
 import requests
 from bs4 import BeautifulSoup
-from fastapi import FastAPI
-from fastapi.responses import JSONResponse
+from flask import Flask, jsonify
 
-app = FastAPI()
+app = Flask(__name__)
 
 DATA_FILE = "ResultsHistory.json"
-
 
 def load_data():
     if os.path.exists(DATA_FILE):
         with open(DATA_FILE, "r") as f:
             return json.load(f)
 
-    # default structure
     yangon = pytz.timezone("Asia/Yangon")
     mm_time = datetime.datetime.now(yangon)
 
@@ -32,7 +29,7 @@ def load_data():
             "twod": "--",
             "set": "--",
             "value": "--",
-            "fetched_at": int(time.time())
+            "fetched_at": 0
         },
         "results": {
             "12:01": {"twod": "--", "set": "--", "value": "--"},
@@ -51,7 +48,6 @@ def get_live():
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
 
-    # example scraping (may need to adjust indices depending on site changes)
     table = soup.find_all("table")[1]
     set_index = table.find_all("div")[4]
     value_index = table.find_all("div")[6]
@@ -94,19 +90,23 @@ def record_live():
     record_times = ["12:01", "16:30"]
 
     if now in record_times:
-        data["results"][now] = live["live"]  # only record live sub-data
+        data["results"][now] = live["live"]
 
     data["live"] = live["live"]
     save_data(data)
     return data
 
 
-@app.get("/api/data")
+@app.route("/api/data", methods=["GET"])
 def api_data():
     data = record_live()
-    return JSONResponse(content=data)
+    return jsonify(data)
+
+
+@app.route("/", methods=["GET"])
+def root():
+    return jsonify({"message": "Flask SET 2D API is running"})
 
 
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=5000, reload=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
