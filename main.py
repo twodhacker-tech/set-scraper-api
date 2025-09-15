@@ -1,11 +1,12 @@
-from flask import Flask, jsonify
 import json
 import datetime
 import pytz
 import os
-import requests   # API ကနေ data ယူဖို့
+import requests  
+from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 
-app = Flask(__name__)
+app = FastAPI()
 
 DATA_FILE = "ResultsHistory.json"
 
@@ -95,10 +96,12 @@ def record_live():
     save_data(data)
     return data
 
-@app.route("/api/data", methods=["GET"])
+
+@app.get("/api/data")
 def api_data():
     data = record_live()
-    return jsonify(data)
+    return JSONResponse(content=data)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    import uvicorn
+    uvicorn.run("main:app", host="0.0.0.0", port=5000, reload=True)
