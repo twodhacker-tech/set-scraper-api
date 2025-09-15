@@ -80,7 +80,7 @@ def api_data():
 
 @app.route("/")
 def root():
-    return jsonify("date": mm_time.strftime("%Y-%m-%d"),
+    return jsonify({"date": mm_time.strftime("%Y-%m-%d"),
         "time": mm_time.strftime("%H:%M:%S"),
         "hour": mm_time.strftime("%H"),
         "minutes": mm_time.strftime("%M"),
