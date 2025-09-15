@@ -17,7 +17,8 @@ def fetch_live_data():
     live_value = value_index.get_text(strip=True)
 
     clean_set = live_set.replace(",", "")
-    top = str(clean_set)[-1]
+    formatted="{:.2f}".format(float(clean_set))
+    top = formatted[-1]
 
     clean_value = live_value.replace(",", "")
     last = str(int(float(clean_value)))[-1]
