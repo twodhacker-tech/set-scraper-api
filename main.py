@@ -14,8 +14,27 @@ def load_data():
         with open(DATA_FILE, "r") as f:
             return json.load(f)
     return {
-  "live": {},
-  "results": {}
+ "date": mm_time.strftime("%Y-%m-%d"),
+        "time": mm_time.strftime("%H:%M:%S"),
+        "hour": mm_time.strftime("%H"),
+        "minutes": mm_time.strftime("%M"),
+        "second": mm_time.strftime("%S"),
+        "live": {
+            "twod": twod_live,
+            "set": live_set,
+            "value": live_value,
+            "fetched_at": int(time.time())
+        },
+  "results": {"12:01":{
+            "twod": --,
+            "set": --,
+            "value": --
+        },
+             "4:30":{
+            "twod": --,
+            "set": --,
+            "value": --
+        }
 }
 
 def save_data(data):
@@ -50,7 +69,7 @@ def get_live():
         "hour": mm_time.strftime("%H"),
         "minutes": mm_time.strftime("%M"),
         "second": mm_time.strftime("%S"),
-        "Live": {
+        "live": {
             "twod": twod_live,
             "set": live_set,
             "value": live_value,
