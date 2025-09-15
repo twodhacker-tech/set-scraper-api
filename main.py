@@ -37,11 +37,9 @@ def load_data():
         }
     }
 
-
 def save_data(data):
     with open(DATA_FILE, "w", encoding="utf-8") as f:
         json.dump(data, f, indent=2, ensure_ascii=False)
-
 
 def get_live():
     url = "https://www.set.or.th/en/market/product/stock/overview"
@@ -79,7 +77,6 @@ def get_live():
         }
     }
 
-
 def record_live():
     yangon = pytz.timezone("Asia/Yangon")
     now = datetime.datetime.now(yangon).strftime("%H:%M")
@@ -96,17 +93,14 @@ def record_live():
     save_data(data)
     return data
 
-
 @app.route("/api/data", methods=["GET"])
 def api_data():
     data = record_live()
     return jsonify(data)
 
-
 @app.route("/", methods=["GET"])
 def root():
     return jsonify({"message": "Flask SET 2D API is running"})
 
-
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000, debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
