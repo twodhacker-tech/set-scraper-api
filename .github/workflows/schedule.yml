@@ -1,34 +1,13 @@
-name: Schedule Record
-
-on:
-  schedule:
-    # 12:01 MMT → 05:31 UTC
-    - cron: "31 5 * * *"
-    # 16:30 MMT → 10:00 UTC
-    - cron: "0 10 * * *"
-
 jobs:
-  record:
+  run-flask-api:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v3
-
-      - name: Setup Python
+      - uses: actions/checkout@v3
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: "3.x"
-
+          python-version: 3.10
       - name: Install dependencies
-        run: pip install pytz requests flask
-
-      - name: Run script
+        run: pip install -r requirements.txt
+      - name: Run Flask script
         run: python main.py
-
-      - name: Commit changes
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          git add ResultsHistory.json
-          git commit -m "Auto update record"
-          git push
