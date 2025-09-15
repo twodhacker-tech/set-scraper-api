@@ -80,7 +80,16 @@ def api_data():
 
 @app.route("/")
 def root():
-    return jsonify({"message": "Flask SET 2D API is running"})
+    return jsonify("date": mm_time.strftime("%Y-%m-%d"),
+        "time": mm_time.strftime("%H:%M:%S"),
+        "hour": mm_time.strftime("%H"),
+        "minutes": mm_time.strftime("%M"),
+        "second": mm_time.strftime("%S"),
+        "live": {"twod":"--","set":"--","value":"--","fetched_at":0},
+        "results": {
+            "12:01":{"twod":"--","set":"--","value":"--"},
+            "16:30":{"twod":"--","set":"--","value":"--"}
+        })
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
