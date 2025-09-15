@@ -39,11 +39,15 @@ def get_live():
     last = str(int(float(live_value.replace(",",""))))[-1]
     twod_live = f"{top}{last}"
 
-    mm_time = datetime.datetime.now(pytz.timezone("Asia/Yangon"))
-    return {"date": mm_time.strftime("%Y-%m-%d"),"time": mm_time.strftime("%H:%M:%S"),"fetched_at": int(time.time()),
-            "live": {"twod": twod_live,"set": live_set,"value": live_value}
+    
+    return {
+            "live": {"twod": twod_live,"set": live_set,"value": live_value,"fetched_at": int(time.time())}
             }
-
+def string_date_time():
+    mm_time = datetime.datetime.now(pytz.timezone("Asia/Yangon"))
+    string_date= mm_time.strftime("%Y-%m-%d")
+    string_time= mm_time.strftime("%H:%M:%S")
+    return{"date": string_date,"time": string_time}
 def record_live():
     now = datetime.datetime.now(pytz.timezone("Asia/Yangon")).strftime("%H:%M")
     data = load_data()
@@ -61,7 +65,7 @@ def api_data():
 
 @app.route("/")
 def root():
-    return jsonify(get_live(),record_live())
+    return jsonify(string_date_time(),record_live())
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
