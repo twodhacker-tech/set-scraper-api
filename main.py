@@ -22,10 +22,7 @@ def load_data():
     return {
         "date": mm_time.strftime("%Y-%m-%d"),
         "time": mm_time.strftime("%H:%M:%S"),
-        "hour": mm_time.strftime("%H"),
-        "minutes": mm_time.strftime("%M"),
-        "second": mm_time.strftime("%S"),
-        "live": {"twod":"--","set":"--","value":"--","fetched_at":0},
+        "live": {"twod":"--","set":"--","value":"--"},
         "results": {
             "12:01":{"twod":"--","set":"--","value":"--"},
             "16:30":{"twod":"--","set":"--","value":"--"}
