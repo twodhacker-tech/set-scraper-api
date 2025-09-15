@@ -36,6 +36,7 @@ def load_data():
             "value": --
         }
 }
+}
 
 def save_data(data):
     with open(DATA_FILE, "w") as f:
