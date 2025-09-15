@@ -23,7 +23,7 @@ def fetch_live_data():
     clean_value = live_value.replace(",", "")
     last = str(int(float(clean_value)))[-1]
 
-    twod_live = str(int(f"{top}{last}"))
+    twod_live = f"{top}{last}"
 
     mm_time = datetime.now(pytz.timezone("Asia/Yangon"))
     return {
