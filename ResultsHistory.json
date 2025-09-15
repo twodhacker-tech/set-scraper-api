@@ -1,4 +1,23 @@
 {
-  "live": {},
-  "results": {}
+ "date": mm_time.strftime("%Y-%m-%d"),
+        "time": mm_time.strftime("%H:%M:%S"),
+        "hour": mm_time.strftime("%H"),
+        "minutes": mm_time.strftime("%M"),
+        "second": mm_time.strftime("%S"),
+        "live": {
+            "twod": --,
+            "set": --,
+            "value": --,
+            "fetched_at": int(time.time())
+        },
+  "results": {"12:01":{
+            "twod": --,
+            "set": --,
+            "value": --
+        },
+             "4:30":{
+            "twod": --,
+            "set": --,
+            "value": --
+        }
 }
