@@ -1,22 +1,22 @@
 {
-        "date":--,
-        "time": --,
-        "hour": --,
-        "minutes": --,
-        "second": --,
+        "date":"--",
+        "time": "--",
+        "hour": "--",
+        "minutes": "--",
+        "second": "--",
         "live": {
-            "twod": --,
-            "set": --,
-            "value": --
+            "twod": "--",
+            "set": "--",
+            "value": "--"
         },
   "results": {"12:01":{
-            "twod": --,
-            "set": --,
-            "value": --
+            "twod": "--",
+            "set": "--",
+            "value": "--"
         },
              "4:30":{
-            "twod": --,
-            "set": --,
-            "value": --
+            "twod": "--",
+            "set": "--",
+            "value": "--"
         }
 }
