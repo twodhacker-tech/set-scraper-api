@@ -16,11 +16,7 @@ def load_data():
         with open(DATA_FILE, "r") as f:
             return json.load(f)
 
-    yangon = pytz.timezone("Asia/Yangon")
-    mm_time = datetime.datetime.now(yangon)
-
-    return {"date": mm_time.strftime("%Y-%m-%d"),"time": mm_time.strftime("%H:%M:%S"),
-            "live": {"twod":"--","set":"--","value":"--"},
+    return {
             "results": [{"twod":"--","set":"--","value":"--"},{"twod":"--","set":"--","value":"--"}]
             }
 
@@ -65,7 +61,7 @@ def api_data():
 
 @app.route("/")
 def root():
-    return jsonify(get_live(),load_data())
+    return jsonify(get_live(),record_live())
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
