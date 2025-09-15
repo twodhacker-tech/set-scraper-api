@@ -9,43 +9,10 @@ from flask import Flask, jsonify
 
 app = Flask(__name__)
 
-DATA_FILE = "ResultsHistory.json"
-
-def load_data():
-    if os.path.exists(DATA_FILE):
-        with open(DATA_FILE, "r") as f:
-            return json.load(f)
-
-    yangon = pytz.timezone("Asia/Yangon")
-    mm_time = datetime.datetime.now(yangon)
-
-    return {
-        "date": mm_time.strftime("%Y-%m-%d"),
-        "time": mm_time.strftime("%H:%M:%S"),
-        "hour": mm_time.strftime("%H"),
-        "minutes": mm_time.strftime("%M"),
-        "second": mm_time.strftime("%S"),
-        "live": {
-            "twod": "--",
-            "set": "--",
-            "value": "--",
-            "fetched_at": 0
-        },
-        "results": {
-            "12:01": {"twod": "--", "set": "--", "value": "--"},
-            "16:30": {"twod": "--", "set": "--", "value": "--"}
-        }
-    }
-
-def save_data(data):
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-
 def get_live():
     url = "https://www.set.or.th/en/market/product/stock/overview"
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
-
     table = soup.find_all("table")[1]
     set_index = table.find_all("div")[4]
     value_index = table.find_all("div")[6]
@@ -53,22 +20,14 @@ def get_live():
     live_set = set_index.get_text(strip=True)
     live_value = value_index.get_text(strip=True)
 
-    clean_set = live_set.replace(",", "")
-    formatted = "{:.2f}".format(float(clean_set))
-    top = formatted[-1]
-
-    clean_value = live_value.replace(",", "")
-    last = str(int(float(clean_value)))[-1]
-
+    top = "{:.2f}".format(float(live_set.replace(",","")))[-1]
+    last = str(int(float(live_value.replace(",",""))))[-1]
     twod_live = f"{top}{last}"
 
     mm_time = datetime.datetime.now(pytz.timezone("Asia/Yangon"))
     return {
         "date": mm_time.strftime("%Y-%m-%d"),
         "time": mm_time.strftime("%H:%M:%S"),
-        "hour": mm_time.strftime("%H"),
-        "minutes": mm_time.strftime("%M"),
-        "second": mm_time.strftime("%S"),
         "live": {
             "twod": twod_live,
             "set": live_set,
@@ -77,30 +36,4 @@ def get_live():
         }
     }
 
-def record_live():
-    yangon = pytz.timezone("Asia/Yangon")
-    now = datetime.datetime.now(yangon).strftime("%H:%M")
 
-    data = load_data()
-    live = get_live()
-
-    record_times = ["12:01", "16:30"]
-
-    if now in record_times:
-        data["results"][now] = live["live"]
-
-    data["live"] = live["live"]
-    save_data(data)
-    return data
-
-@app.route("/api/data", methods=["GET"])
-def api_data():
-    data = record_live()
-    return jsonify(data)
-
-@app.route("/", methods=["GET"])
-def root():
-    return jsonify({"message": "Flask SET 2D API is running"})
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)), debug=True)
