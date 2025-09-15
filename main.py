@@ -8,6 +8,7 @@ from bs4 import BeautifulSoup
 from flask import Flask, jsonify
 
 app = Flask(__name__)
+MMT = timezone("Asia,Yangon")
 
 DATA_FILE = "ResultsHistory.json"
 
@@ -15,8 +16,7 @@ def load_data():
     if os.path.exists(DATA_FILE):
         with open(DATA_FILE, "r") as f:
             return json.load(f)
-
-    mm_time = datetime.datetime.now(pytz.timezone("Asia/Yangon"))
+mm_time = datetime.now(pytz.timezone("Asia/Yangon"))
 
     return {
         "date": mm_time.strftime("%Y-%m-%d"),
