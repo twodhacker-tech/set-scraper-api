@@ -80,7 +80,7 @@ def api_data():
 
 @app.route("/")
 def root():
-    return jsonify(get_live(),record_live())
+    return jsonify(get_live(),load_data())
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
