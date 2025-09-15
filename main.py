@@ -43,8 +43,9 @@ def save_data(data):
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 def get_live():
-       url = "https://www.set.or.th/en/market/product/stock/overview"
+    url = "https://www.set.or.th/en/market/product/stock/overview"
     response = requests.get(url)
+    return response.text
     soup = BeautifulSoup(response.text, "html.parser")
 
     table = soup.find_all("table")[1]
