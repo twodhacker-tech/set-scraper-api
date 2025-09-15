@@ -92,7 +92,7 @@ def record_live():
     if now in record_times:
         data["results"][now] = live  # တိကျတဲ့အချိန် record
 
-    data["current"] = live
+    data["live"] = live
     save_data(data)
     return data
 
