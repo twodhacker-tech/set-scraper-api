@@ -1,13 +1,29 @@
-from fastapi import FastAPI
-import os, json, base64, time, requests
-from datetime import datetime
+from flask import Flask, jsonify
+import json
+import datetime
 import pytz
-from bs4 import BeautifulSoup
+import os
+import requests   # API ကနေ data ယူဖို့
 
-app=FastAPI()
-@app.get("/")
-def fetch_live_data():
-    url = "https://www.set.or.th/en/market/product/stock/overview"
+app = Flask(__name__)
+
+DATA_FILE = "ResultsHistory.json"
+
+def load_data():
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, "r") as f:
+            return json.load(f)
+    return {
+  "live": {},
+  "results": {}
+}
+
+def save_data(data):
+    with open(DATA_FILE, "w") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+def get_live():
+       url = "https://www.set.or.th/en/market/product/stock/overview"
     response = requests.get(url)
     soup = BeautifulSoup(response.text, "html.parser")
 
@@ -42,38 +58,26 @@ def fetch_live_data():
         }
     }
 
-def save_to_github(new_data):
-    token = os.getenv("TICKET_SC")
-    repo = os.getenv("MY_T")
-    path = "ResultsHistory.json"
+def record_live():
+    yangon = pytz.timezone("Asia/Yangon")
+    now = datetime.datetime.now(yangon).strftime("%H:%M")
 
-    headers = {"Authorization": f"token {token}"}
-    api_url = f"https://api.github.com/repos/{repo}/contents/{path}"
+    data = load_data()
+    live = get_live()
 
-    r = requests.get(api_url, headers=headers)
-    if r.status_code == 200:
-        content = r.json()
-        sha = content["sha"]
-        old_data = json.loads(base64.b64decode(content["content"]).decode())
-    else:
-        sha = None
-        old_data = []
+    record_times = ["12:01", "16:30"]
 
-    old_data.append(new_data)
-    new_content = json.dumps(old_data, indent=4, ensure_ascii=False)
+    if now in record_times:
+        data["results"][now] = live  # တိကျတဲ့အချိန် record
 
-    commit_data = {
-        "message": f"Update ResultsHistory.json at {new_data['time']}",
-        "content": base64.b64encode(new_content.encode()).decode(),
-        "sha": sha
-    }
-    r = requests.put(api_url, headers=headers, data=json.dumps(commit_data))
+    data["current"] = live
+    save_data(data)
+    return data
 
-    if r.status_code in [200,201]:
-        print("✅ Commit success")
-    else:
-        print("❌ Commit failed:", r.text)
+@app.route("/api/data", methods=["GET"])
+def api_data():
+    data = record_live()
+    return jsonify(data)
 
 if __name__ == "__main__":
-    data = fetch_live_data()
-    save_to_github(data)
+    app.run(host="0.0.0.0", port=5000)
