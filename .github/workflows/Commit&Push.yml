@@ -1,0 +1,7 @@
+- name: Commit & Push
+  run: |
+    git config user.name "github-actions"
+    git config user.email "github-actions@github.com"
+    git add ResultsHistory.json
+    git commit -m "Update ResultsHistory.json" || echo "Nothing to commit"
+    git push
