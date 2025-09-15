@@ -20,14 +20,14 @@ def load_data():
     mm_time = datetime.datetime.now(yangon)
 
     return {
-        "date": mm_time.strftime("%Y-%m-%d"),
-        "time": mm_time.strftime("%H:%M:%S"),
-        "live": {"twod":"--","set":"--","value":"--"},
-        "results": {
+            "date": mm_time.strftime("%Y-%m-%d"),
+            "time": mm_time.strftime("%H:%M:%S"),
+            "live": {"twod":"--","set":"--","value":"--"},
+            "results": {
             "12:01":{"twod":"--","set":"--","value":"--"},
             "16:30":{"twod":"--","set":"--","value":"--"}
-        }
-    }
+             }
+           }
 
 def save_data(data):
     with open(DATA_FILE, "w", encoding="utf-8") as f:
@@ -50,15 +50,15 @@ def get_live():
 
     mm_time = datetime.datetime.now(pytz.timezone("Asia/Yangon"))
     return {
-        "date": mm_time.strftime("%Y-%m-%d"),
-        "time": mm_time.strftime("%H:%M:%S"),
-        "live": {
+            "date": mm_time.strftime("%Y-%m-%d"),
+            "time": mm_time.strftime("%H:%M:%S"),
+            "live": {
             "twod": twod_live,
             "set": live_set,
             "value": live_value,
             "fetched_at": int(time.time())
-        }
-    }
+            }
+           }
 
 def record_live():
     now = datetime.datetime.now(pytz.timezone("Asia/Yangon")).strftime("%H:%M")
