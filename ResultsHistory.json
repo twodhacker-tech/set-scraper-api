@@ -1,10 +1,4 @@
 {
-  "live": {
-    "twod": "--",
-    "set": "--",
-    "value": "--",
-    "fetched_at": 0
-  },
   "results": {
     "12:01": {"twod": "--", "set": "--", "value": "--"},
     "16:30": {"twod": "--", "set": "--", "value": "--"}
