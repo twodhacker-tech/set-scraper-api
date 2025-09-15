@@ -16,8 +16,7 @@ def load_data():
         with open(DATA_FILE, "r") as f:
             return json.load(f)
 
-    yangon = pytz.timezone("Asia/Yangon")
-    mm_time = datetime.datetime.now(yangon)
+    mm_time = datetime.datetime.now(pytz.timezone("Asia/Yangon"))
 
     return {
         "date": mm_time.strftime("%Y-%m-%d"),
