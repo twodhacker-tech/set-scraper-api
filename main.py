@@ -77,7 +77,7 @@ def api_data():
 def root():
     return jsonify({
         **string_date_time(),
-        **save_data()
+        **record_live()
     })
 
 if __name__ == "__main__":
