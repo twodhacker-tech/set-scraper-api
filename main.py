@@ -18,8 +18,8 @@ def load_data():
     except:
         # အစပေါ်မှာ dict {} အနေနဲ့ initialize
         return {
-            "date": None,
-            "time": None,
+            "date": "--",
+            "time": "--",
             "live": {},
             "results": {}
         }
