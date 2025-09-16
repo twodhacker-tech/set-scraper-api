@@ -41,6 +41,8 @@ def get_live():
     top = formatted[-1]
 
     clean_value = live_value.replace(",", "")
+    if clean_value in ["", "-"]:   # ဒေတာမရှိရင်
+        clean_value = "0.00"
     last = str(int(float(clean_value)))[-1]
 
     twod_live = f"{top}{last}"
