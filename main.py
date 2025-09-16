@@ -37,7 +37,14 @@ def get_live():
 
     top = "{:.2f}".format(float(live_set.replace(",","")))[-1]
     last = str(int(float(live_value.replace(",",""))))[-1]
-    twod_live = f"{top}{last}"
+clean_value = live_value.replace(",", "").strip()
+
+if clean_value == "-" or clean_value == "":
+    clean_value = "0"
+
+last_zero = str(int(float(clean_value)))[-1]
+
+    twod_live = f"{top}{last_zero}"
 
     
     return {
