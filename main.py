@@ -46,8 +46,7 @@ def get_live():
     last = str(int(float(clean_value)))[-1]
 
     twod_live = f"{top}{last}"
-
-        return {
+    return {
             "live": {"twod": twod_live,"set": live_set,"value": live_value,"fetched_at": int(time.time())}
             }
 def string_date_time():
