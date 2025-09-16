@@ -37,14 +37,22 @@ def get_live():
 
     top = "{:.2f}".format(float(live_set.replace(",","")))[-1]
     
-clean_value = live_value.replace(",", "").strip()
 
-if clean_value == "-" or clean_value == "":
-    last = None   # ဒေတာမရှိ
-else:
-    last = str(int(float(clean_value)))[-1]
+    live_value = some_source["value"]  # ဥပမာ API response ထဲက string
+    clean_value = live_value.replace(",", "").strip()
 
-print(last)
+    if clean_value in ["", "-"]:   # ဒေတာမရှိရင်
+        clean_value = "0"
+
+    try:
+        last = str(int(float(clean_value)))[-1]
+    except ValueError:
+        last = "0"
+
+    return {
+        "value": live_value,
+        "last": last
+    }
 
     twod_live = f"{top}{last}"
 
