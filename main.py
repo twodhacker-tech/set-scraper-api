@@ -39,16 +39,13 @@ def get_live():
     
 
     clean_value = live_value.replace(",", "").strip()
-
-if clean_value == "-" or clean_value == "":
-    clean_value = "0"
-
 last = str(int(float(clean_value)))[-1]
+if last == "-" or last == "":
+    last = "0"
 
     twod_live = f"{top}{last}"
 
-    
-    return {
+        return {
             "live": {"twod": twod_live,"set": live_set,"value": live_value,"fetched_at": int(time.time())}
             }
 def string_date_time():
