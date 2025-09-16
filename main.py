@@ -75,7 +75,10 @@ def api_data():
 
 @app.route("/")
 def root():
-    return jsonify(string_date_time(),record_live())
+    return jsonify({
+        **string_date_time(),
+        **record_live()
+    })
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
