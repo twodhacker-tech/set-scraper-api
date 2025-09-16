@@ -40,9 +40,11 @@ def get_live():
 clean_value = live_value.replace(",", "").strip()
 
 if clean_value == "-" or clean_value == "":
-    clean_value = "0"
+    last = None   # ဒေတာမရှိ
+else:
+    last = str(int(float(clean_value)))[-1]
 
-last = str(int(float(clean_value)))[-1]
+print(last)
 
     twod_live = f"{top}{last}"
 
