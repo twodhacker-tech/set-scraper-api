@@ -59,13 +59,14 @@ def string_date_time():
     string_date= mm_time.strftime("%Y-%m-%d")
     string_time= mm_time.strftime("%H:%M:%S")
     return{"date": string_date,"time": string_time}
+
 def record_live():
     now = datetime.datetime.now(pytz.timezone("Asia/Yangon")).strftime("%H:%M")
     data = load_data()
     live = get_live()
     for t in ["12:01","16:30"]:
         if now == t:
-            data["results"][t] = live["live"]
+            data["Results"][t] = live["live"]
     data["live"] = live["live"]
     save_data(data)
     return data
