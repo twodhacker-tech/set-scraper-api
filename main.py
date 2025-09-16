@@ -36,10 +36,7 @@ def get_live():
     live_value = value_index.get_text(strip=True)
 
     top = "{:.2f}".format(float(live_set.replace(",","")))[-1]
-    
-
-    clean_value = live_value.replace(",", "").strip()
-last = str(int(float(clean_value)))[-1]
+last = str(int(float(live_value)))[-1]
 if last == "-" or last == "":
     last = "0"
 
