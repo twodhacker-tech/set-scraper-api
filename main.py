@@ -12,18 +12,22 @@ app = Flask(__name__)
 DATA_FILE = "ResultsHistory.json"
 
 def load_data():
-    if os.path.exists(DATA_FILE):
+    try:
         with open(DATA_FILE, "r") as f:
             return json.load(f)
+    except:
+        # အစပေါ်မှာ dict {} အနေနဲ့ initialize
+        return {
+            "date": None,
+            "time": None,
+            "live": {},
+            "results": {}
+        }
 
-    return {
-            "results": [{"twod":"--","set":"--","value":"--"},{"twod":"--","set":"--","value":"--"}]
-            }
 
 def save_data(data):
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
-
+     with open(DATA_FILE, "w") as f:
+        json.dump(data, f, indent=2)
 def get_live():
     url = "https://www.set.or.th/en/market/product/stock/overview"
     response = requests.get(url)
