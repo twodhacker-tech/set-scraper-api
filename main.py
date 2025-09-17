@@ -18,11 +18,11 @@ return json.load(f)
 except:
 # အစပေါ်မှာ dict {} အနေနဲ့ initialize
 return {
-"date": "--",
-"time": "--",
-"live": {},
-"12:01": {},
-"4:30":{}
+    "date": "--",
+    "time": "--",
+    "live": {},
+    "12:01": {},
+    "4:30":{}
 }
 
 def save_data(data):
@@ -50,15 +50,17 @@ if clean_value in ["", "-"]:   # ဒေတာမရှိရင်
 last = str(int(float(clean_value)))[-1]  
 
 twod_live = f"{top}{last}"  
-return {  
-        "live": {"twod": twod_live,"set": live_set,"value": live_value,"fetched_at": int(time.time())}  
+return {
+    "live": {"twod": twod_live,"set": live_set,"value": live_value,"fetched_at": int(time.time())}  
         }
 
 def string_date_time():
 mm_time = datetime.datetime.now(pytz.timezone("Asia/Yangon"))
 string_date= mm_time.strftime("%Y-%m-%d")
 string_time= mm_time.strftime("%H:%M:%S")
-return{"date": string_date,"time": string_time}
+return{
+    "date": string_date,"time": string_time
+}
 
 def record_live():
 # Get current time in Yangon timezone
@@ -82,9 +84,9 @@ return jsonify(record_live())
 @app.route("/")
 def root():
 return jsonify({
-**string_date_time(),
-**get_live(),
-**record_live()
+    **string_date_time(),
+    **get_live(),
+    **record_live()
 })
 
 if name == "main":
