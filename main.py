@@ -61,14 +61,19 @@ def string_date_time():
     return{"date": string_date,"time": string_time}
 
 def record_live():
+    # Get current time in Yangon timezone
     now = datetime.datetime.now(pytz.timezone("Asia/Yangon")).strftime("%H:%M")
+    
+    # Load data and get live data
     data = load_data()
     live = get_live()
-    for t in ["12:01","16:30"]:
- if now == t:
-    data[t] = live["live"]
-    save_data(data)
-    return data
+    
+    # Check for specific times
+    for t in ["12:01", "16:30"]:
+        if now == t:  # Indentation fixed here
+            data[t] = live["live"]
+            save_data(data)
+            return data
 
 @app.route("/api/data")
 def api_data():
