@@ -82,10 +82,9 @@ def api_data():
 @app.route("/")
 def root():
     return jsonify({
-           **string_date_time(),
-           **get_live(),
-           **record_live()     
-    })
+        "live": get_live()["live"],   # တိုက်ရိုက်ယူတဲ့ Live Data
+        "record": record_live()       # အချိန်မှီရင် သိမ်းထားတဲ့ Record Data
+    })  
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
