@@ -28,8 +28,8 @@ return {
         }
 
 def save_data(data):
-with open(DATA_FILE, "w") as f:
-json.dump(data, f, indent=2)
+   with open(DATA_FILE, "w") as f:
+   json.dump(data, f, indent=2)
 def get_live():
 url = "https://www.set.or.th/en/market/product/stock/overview"
 response = requests.get(url)
