@@ -66,19 +66,25 @@ return{
 }
 
 def record_live():
-# Get current time in Yangon timezone
-now = datetime.datetime.now(pytz.timezone("Asia/Yangon")).strftime("%H:%M:%S")
+    # Get current time in Yangon timezone (seconds ပါအောင်)
+    now = datetime.datetime.now(pytz.timezone("Asia/Yangon")).strftime("%H:%M:%S")
 
-# Load data and get live data  
-data = load_data()  
-live = get_live()  
+    # Load data and get live data  
+    data = load_data()  
+    live = get_live()  
 
-# Check for specific times  
-for t in ["12:01:00", "16:30:00"]:  
-    if now == t: 
-        data["Results"][t] = live["live"]  
-        save_data(data)  
-        return data
+    # Check for AM / PM times
+    if now == "12:01:00":  
+        data["Am"] = live["live"]  
+        save_data(data)  # 12:01 မှာ save လုပ်ထား
+
+    if now == "16:30:00":  
+        data["Pm"] = live["live"]  
+        save_data(data)  # 16:30 မှာ save လုပ်ထား
+
+        return live["live"]  # 16:30 မှာ live data ကို return ပြန်
+
+    return data  # မဟုတ်ရင် data ကို return ပြန်
 
 @app.route("/api/data")
 def api_data():
