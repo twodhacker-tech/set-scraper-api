@@ -12,22 +12,20 @@ app = Flask(name)
 DATA_FILE = "ResultsHistory.json"
 
 def load_data():
-  try:
-   with open(DATA_FILE, "r") as f:
-   file_content = f.read()  # ဖိုင်ကိုဖတ်ပြီး data ကြည့်ပါ
-   print(file_content)  # ဖိုင်အကြောင်းကို debug ရန် print ထုတ်ပါ
-   return json.loads(file_content)
-   except Exception as e:
-   print(f"Error: {e}")  # အမှားတစ်ခုရှိရင် ဖော်ပြပါ
-return {
-        "date": "--",
-        "time": "--",
-        "live": {},
-        "Results":{},
-        "12:01:00": {},
-        "4:30:00": {}
+    try:
+        with open(DATA_FILE, "r") as f:
+            file_content = f.read()  # ဖိုင်ကိုဖတ်ပြီး data ကြည့်ပါ
+            print(file_content)  # ဖိုင်အကြောင်းကို debug ရန် print ထုတ်ပါ
+            return json.loads(file_content)
+    except Exception as e:
+        print(f"Error: {e}")  # အမှားတစ်ခုရှိရင် ဖော်ပြပါ
+        return {
+            "date": "--",
+            "time": "--",
+            "live": {},
+            "12:01": {},
+            "4:30": {}
         }
-
 def save_data(data):
    with open(DATA_FILE, "w") as f:
    json.dump(data, f, indent=2)
