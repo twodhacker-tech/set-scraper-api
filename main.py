@@ -23,8 +23,9 @@ return {
         "date": "--",
         "time": "--",
         "live": {},
-        "12:01": {},
-        "4:30": {}
+        "Results":{},
+        "12:01:00": {},
+        "4:30:00": {}
         }
 
 def save_data(data):
@@ -66,16 +67,16 @@ return{
 
 def record_live():
 # Get current time in Yangon timezone
-now = datetime.datetime.now(pytz.timezone("Asia/Yangon")).strftime("%H:%M")
+now = datetime.datetime.now(pytz.timezone("Asia/Yangon")).strftime("%H:%M:%S")
 
 # Load data and get live data  
 data = load_data()  
 live = get_live()  
 
 # Check for specific times  
-for t in ["12:01", "16:30"]:  
-    if now == t:  # Indentation fixed here  
-        data[t] = live["live"]  
+for t in ["12:01:00", "16:30:00"]:  
+    if now == t: 
+        data["Results"][t] = live["live"]  
         save_data(data)  
         return data
 
