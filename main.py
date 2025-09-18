@@ -33,8 +33,13 @@ def load_data():
             "4:30:00": {}
         }
 def save_data(data):
-   with open(DATA_FILE, "w") as f:
-   json.dump(data, f, indent=2)
+    # Delete 'record' key before saving the data, if it's there
+    if "record" in data:
+        del data["record"]  # record key ကို remove လုပ်ပါ
+
+    # Open file to save data
+    with open(DATA_FILE, "w") as f:
+        json.dump(data, f, indent=2)  # This line should be indented
 def get_live():
 url = "https://www.set.or.th/en/market/product/stock/overview"
 response = requests.get(url)
