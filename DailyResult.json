@@ -1,16 +1,16 @@
 {
-  "date": "2025-09-19",
-  "time": "16:30:00",
+  "date": "",
+  "time": "",
   "Am": {
-    "twod": "47",
-    "set": "1,299.96",
-    "value": "26,944.27",
-    "fetched_at": 1758178144
+    "twod": "",
+    "set": "",
+    "value": "",
+    "fetched_at": 
   },
   "Pm": {
-    "twod": "53",
-    "set": "1,310.54",
-    "value": "27,100.65",
-    "fetched_at": 1758190200
+    "twod": "",
+    "set": "",
+    "value": "",
+    "fetched_at": 
   }
 }
