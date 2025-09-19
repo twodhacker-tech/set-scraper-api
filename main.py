@@ -7,106 +7,140 @@ import requests
 from bs4 import BeautifulSoup
 from flask import Flask, jsonify
 
-app = Flask(name)
+app = Flask(__name__)
 
-DATA_FILE = "ResultsHistory.json"
+# ---------------------- File Names ----------------------
+DATA_FILE_DAILY = "DailyResult.json"      # တစ်နေ့တည်း overwrite
+DATA_FILE_HISTORY = "HistoryResult.json"  # နေ့တိုင်း စုဆောင်း
 
-def load_data():
+# ---------------------- Load Daily Data ----------------------
+def load_daily():
     try:
-        with open(DATA_FILE, "r") as f:
-            file_content = f.read()  # ဖိုင်ကိုဖတ်ပြီး data ကြည့်ပါ
-            print(file_content)  # ဖိုင်အကြောင်းကို debug ရန် print ထုတ်ပါ
-            data = json.loads(file_content)
-
-            # Check if 'record' is null, remove it from data
-            if data.get("record") is None:
-                del data["record"]
-
-            return data
-    except Exception as e:
-        print(f"Error: {e}")  # အမှားတစ်ခုရှိရင် ဖော်ပြပါ
+        with open(DATA_FILE_DAILY, "r") as f:
+            return json.load(f)
+    except:
         return {
             "date": "--",
             "time": "--",
-            "live": {},
-            "12:01:00": {},
-            "4:30:00": {}
+            "Am": {},
+            "Pm": {}
         }
-def save_data(data):
-    # Delete 'record' key before saving the data, if it's there
-    if "record" in data:
-        del data["record"]  # record key ကို remove လုပ်ပါ
 
-    # Open file to save data
-    with open(DATA_FILE, "w") as f:
-        json.dump(data, f, indent=2)  # This line should be indented
+# ---------------------- Save Daily (overwrite) ----------------------
+def save_daily(data):
+    with open(DATA_FILE_DAILY, "w") as f:
+        json.dump(data, f, indent=2)
+
+# ---------------------- Save History (append) ----------------------
+def save_history(date, period, live):
+    try:
+        with open(DATA_FILE_HISTORY, "r") as f:
+            history = json.load(f)
+    except:
+        history = {}
+
+    if date not in history:
+        history[date] = {}
+
+    history[date][period] = live
+
+    with open(DATA_FILE_HISTORY, "w") as f:
+        json.dump(history, f, indent=2)
+
+# ---------------------- Scraping ----------------------
 def get_live():
-url = "https://www.set.or.th/en/market/product/stock/overview"
-response = requests.get(url)
-soup = BeautifulSoup(response.text, "html.parser")
+    url = "https://www.set.or.th/en/market/product/stock/overview"
+    response = requests.get(url)
+    soup = BeautifulSoup(response.text, "html.parser")
 
-table = soup.find_all("table")[1]  
-set_index = table.find_all("div")[4]  
-value_index = table.find_all("div")[6]  
+    table = soup.find_all("table")[1]
+    set_index = table.find_all("div")[4]
+    value_index = table.find_all("div")[6]
 
-live_set = set_index.get_text(strip=True)  
-live_value = value_index.get_text(strip=True)  
+    live_set = set_index.get_text(strip=True)
+    live_value = value_index.get_text(strip=True)
 
-clean_set = live_set.replace(",", "")  
-formatted="{:.2f}".format(float(clean_set))  
-top = formatted[-1]  
+    # SET index → last digit
+    clean_set = live_set.replace(",", "")
+    formatted = "{:.2f}".format(float(clean_set))
+    top = formatted[-1]
 
-clean_value = live_value.replace(",", "")  
-if clean_value in ["", "-"]:   # ဒေတာမရှိရင်  
-    clean_value = "0.00"  
-last = str(int(float(clean_value)))[-1]  
+    # Value → last digit
+    clean_value = live_value.replace(",", "")
+    if clean_value in ["", "-"]:
+        clean_value = "0.00"
+    last = str(int(float(clean_value)))[-1]
 
-twod_live = f"{top}{last}"  
-return {
-    "live": {"twod": twod_live,"set": live_set,"value": live_value,"fetched_at": int(time.time())}  
+    twod_live = f"{top}{last}"
+
+    return {
+        "live": {
+            "twod": twod_live,
+            "set": live_set,
+            "value": live_value,
+            "fetched_at": int(time.time())
         }
+    }
 
+# ---------------------- Date & Time ----------------------
 def string_date_time():
-mm_time = datetime.datetime.now(pytz.timezone("Asia/Yangon"))
-string_date= mm_time.strftime("%Y-%m-%d")
-string_time= mm_time.strftime("%H:%M:%S")
-return{
-    "date": string_date,
-    "time": string_time
-}
+    mm_time = datetime.datetime.now(pytz.timezone("Asia/Yangon"))
+    string_date = mm_time.strftime("%Y-%m-%d")
+    string_time = mm_time.strftime("%H:%M:%S")
+    return {
+        "date": string_date,
+        "time": string_time
+    }
 
+# ---------------------- Record Live Data ----------------------
 def record_live():
-    # Get current time in Yangon timezone (seconds ပါအောင်)
-    now = datetime.datetime.now(pytz.timezone("Asia/Yangon")).strftime("%H:%M:%S")
+    now = datetime.datetime.now(pytz.timezone("Asia/Yangon"))
+    string_date = now.strftime("%Y-%m-%d")
+    string_time = now.strftime("%H:%M:%S")
 
-    # Load data and get live data  
-    data = load_data()  
-    live = get_live()  
+    daily = load_daily()
+    live = get_live()["live"]
 
-    # Check for AM / PM times
-    if now == "12:01:00":  
-        data["Am"] = live["live"]  
-        save_data(data)  # 12:01 မှာ save လုပ်ထား
+    # daily overwrite
+    daily["date"] = string_date
+    daily["time"] = string_time
 
-    if now == "16:30:00":  
-        data["Pm"] = live["live"]  
-        save_data(data)  # 16:30 မှာ save လုပ်ထား
+    if string_time == "12:01:00":
+        daily["Am"] = live
+        save_daily(daily)
+        save_history(string_date, "Am", live)
 
-        return live["live"]  # 16:30 မှာ live data ကို return ပြန်
+    if string_time == "16:30:00":
+        daily["Pm"] = live
+        save_daily(daily)
+        save_history(string_date, "Pm", live)
+        return live
 
-    return data  # မဟုတ်ရင် data ကို return ပြန်
+    return daily
+
+# ---------------------- API Routes ----------------------
+@app.route("/api/daily")
+def api_daily():
+    return jsonify(load_daily())
+
+@app.route("/api/history")
+def api_history():
+    try:
+        with open(DATA_FILE_HISTORY, "r") as f:
+            history = json.load(f)
+    except:
+        history = {}
+    return jsonify(history)
 
 @app.route("/api/data")
 def api_data():
-return jsonify(string_date_time())
+    return jsonify(string_date_time())
 
 @app.route("/")
 def root():
-return jsonify({
-    string_date_time()
-})
+    return jsonify(string_date_time())
 
-if name == "main":
-port = int(os.environ.get("PORT", 5000))
-app.run(host="0.0.0.0", port=port, debug=True)
-
+# ---------------------- Run Server ----------------------
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
