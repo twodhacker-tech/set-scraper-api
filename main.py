@@ -103,9 +103,9 @@ return jsonify(record_live())
 @app.route("/")
 def root():
 return jsonify({
-    **string_date_time(),
-    **get_live(),
-    **load_data()
+    string_date_time(),
+    get_live(),
+    load_data()
 })
 
 if name == "main":
