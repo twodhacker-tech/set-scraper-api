@@ -98,12 +98,12 @@ def record_live():
 
 @app.route("/api/data")
 def api_data():
-return jsonify(record_live(),save_data(data))
+return jsonify(string_date_time())
 
 @app.route("/")
 def root():
 return jsonify({
-    save_data()
+    string_date_time()
 })
 
 if name == "main":
