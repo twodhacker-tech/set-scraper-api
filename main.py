@@ -105,7 +105,6 @@ def root():
 return jsonify({
     **string_date_time(),
     **get_live(),
-    **record_live(),
     **load_data()
 })
 
