@@ -138,22 +138,20 @@ def record_live():
     return result
 
 # ---------------------- API Routes ----------------------
+
+# /api/all route to return live, daily, history, and server time
 @app.route("/api/all")
 def api_all():
-    """
-    Endpoint to return live data, daily, and history
-    """
-    # Load live, daily, and history data
     live = get_live().get("live", {})
     daily = load_daily()
     history = load_history()
+    server_time = string_date_time()
 
-    # Ensure the response is a single object
     response = {
         "live": live,
         "daily": daily,
         "history": history,
-        "server_time": string_date_time()  # Include the server time as well
+        "server_time": server_time  # Include the server time as well
     }
 
     return jsonify(response)
@@ -168,11 +166,29 @@ def api_history():
 
 @app.route("/api/data")
 def api_data():
-    return jsonify(string_date_time(),get_live(),record_live())
+    live = get_live().get("live", {})
+    daily = load_daily()
+    history = load_history()
+    server_time = string_date_time()
+
+    response = {
+        "server_time": server_time,
+        "live": live,
+        "daily": daily,
+        "history": history
+    }
+    return jsonify(response)
 
 @app.route("/")
 def root():
-    return jsonify(string_date_time(),get_live(),record_live())
+    live = get_live().get("live", {})
+    server_time = string_date_time()
+
+    response = {
+        "server_time": server_time,
+        "live": live
+    }
+    return jsonify(response)
 
 @app.route("/api/record", methods=["GET", "POST"])
 def api_record():
