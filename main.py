@@ -113,12 +113,14 @@ def record_live():
 
     daily = load_daily()
     live_obj = get_live().get("live", {})
+    
     # update daily meta
     daily["date"] = string_date
     daily["time"] = string_time
 
     result = {"date": string_date, "time": string_time, "saved": False, "period": None, "live": live_obj}
 
+    # Ensure the correct periods are saved
     if string_time == "12:01:00":
         daily["Am"] = live_obj
         save_daily(daily)
@@ -133,6 +135,9 @@ def record_live():
         result.update({"saved": True, "period": "Pm"})
         return result
 
+    # If the time is neither 12:01:00 nor 16:30:00, just update daily data
+    save_daily(daily)  # Save daily data regardless of time
+    return result
     # If not the exact times, just update daily (not saving Am/Pm)
     save_daily(daily)  # optional: keep daily meta always up-to-date
     return result
