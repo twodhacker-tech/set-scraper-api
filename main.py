@@ -105,7 +105,7 @@ def root():
 return jsonify({
     string_date_time(),
     get_live(),
-    load_data()
+    save_data()
 })
 
 if name == "main":
