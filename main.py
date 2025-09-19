@@ -5,7 +5,7 @@ import os
 import time
 import requests
 from bs4 import BeautifulSoup
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify
 
 app = Flask(__name__)
 
@@ -18,7 +18,8 @@ def load_daily():
     try:
         with open(DATA_FILE_DAILY, "r") as f:
             return json.load(f)
-    except Exception:
+    except Exception as e:
+        print(f"Error loading daily data: {e}")
         return {
             "date": "--",
             "time": "--",
@@ -27,30 +28,35 @@ def load_daily():
         }
 
 def save_daily(data):
-    with open(DATA_FILE_DAILY, "w") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+    try:
+        with open(DATA_FILE_DAILY, "w") as f:
+            json.dump(data, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        print(f"Error saving daily data: {e}")
 
 def load_history():
     try:
         with open(DATA_FILE_HISTORY, "r") as f:
             return json.load(f)
-    except Exception:
+    except Exception as e:
+        print(f"Error loading history data: {e}")
         return {}
 
 def save_history(date_str, period, live):
-    history = load_history()
-    if date_str not in history:
-        history[date_str] = {}
-    history[date_str][period] = live
-    with open(DATA_FILE_HISTORY, "w") as f:
-        json.dump(history, f, indent=2, ensure_ascii=False)
+    try:
+        history = load_history()
+        if date_str not in history:
+            history[date_str] = {}
+        history[date_str][period] = live
+        with open(DATA_FILE_HISTORY, "w") as f:
+            json.dump(history, f, indent=2, ensure_ascii=False)
+    except Exception as e:
+        print(f"Error saving history data: {e}")
 
 # ---------------------- Scraping / Live ----------------------
 def get_live():
     """
-    Returns a dict like:
-    { "live": { "twod": "...", "set": "...", "value": "...", "fetched_at": 12345 } }
-    If error occurs, returns a live object with error key.
+    Returns live data such as stock market details.
     """
     url = "https://www.set.or.th/en/market/product/stock/overview"
     fetched_at = int(time.time())
@@ -99,11 +105,7 @@ def string_date_time():
 # ---------------------- Record Live Data ----------------------
 def record_live():
     """
-    - Loads daily file, updates date/time.
-    - If current time == 12:01:00 -> save Am to both daily & history.
-    - If current time == 16:30:00 -> save Pm to both daily & history.
-    - Returns a result dict describing what happened.
-    Note: You can call this endpoint manually or trigger via cron/job at those times.
+    Record live data into daily and history files for AM and PM.
     """
     now = datetime.datetime.now(pytz.timezone("Asia/Yangon"))
     string_date = now.strftime("%Y-%m-%d")
@@ -136,6 +138,24 @@ def record_live():
     return result
 
 # ---------------------- API Routes ----------------------
+@app.route("/api/all")
+def api_all():
+    """
+    Endpoint to return live data, daily, and history
+    """
+    # Load live, daily and history data
+    live = get_live().get("live", {})
+    daily = load_daily()
+    history = load_history()
+
+    # Return all data in JSON format
+    return jsonify({
+        "live": live,
+        "daily": daily,
+        "history": history,
+        "server_time": string_date_time()
+    })
+
 @app.route("/api/daily")
 def api_daily():
     return jsonify(load_daily())
@@ -146,30 +166,16 @@ def api_history():
 
 @app.route("/api/data")
 def api_data():
-    return jsonify(string_date_time(),get_live(),record_live())
+    return jsonify(string_date_time())
 
 @app.route("/")
 def root():
-    return jsonify(string_date_time(),get_live(),record_live())
-
-@app.route("/api/all")
-def api_all():
-    daily = load_daily()
-    history = load_history()
-    live = get_live().get("live", {})
-    server_time = string_date_time()
-    return jsonify({
-        "live": live,
-        "daily": daily,
-        "history": history,
-        "server_time": server_time
-    })
+    return jsonify(string_date_time())
 
 @app.route("/api/record", methods=["GET", "POST"])
 def api_record():
     """
-    Manual trigger to run record_live().
-    You can call this endpoint from a scheduler (cron, external job) at 12:01 and 16:30.
+    Manually trigger the record live data function.
     """
     res = record_live()
     return jsonify(res)
