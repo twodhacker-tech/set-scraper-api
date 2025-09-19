@@ -98,7 +98,7 @@ def record_live():
 
 @app.route("/api/data")
 def api_data():
-return jsonify(record_live())
+return jsonify(record_live(),save_data(data))
 
 @app.route("/")
 def root():
