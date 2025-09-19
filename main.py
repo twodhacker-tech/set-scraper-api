@@ -134,11 +134,11 @@ def api_history():
 
 @app.route("/api/data")
 def api_data():
-    return jsonify(string_date_time())
+    return jsonify(string_date_time(),get_live())
 
 @app.route("/")
 def root():
-    return jsonify(string_date_time())
+    return jsonify(string_date_time(),get_live())
 
 # ---------------------- Run Server ----------------------
 if __name__ == "__main__":
