@@ -168,11 +168,11 @@ def api_history():
 
 @app.route("/api/data")
 def api_data():
-    return jsonify(string_date_time())
+    return jsonify(string_date_time(),get_live(),record_live())
 
 @app.route("/")
 def root():
-    return jsonify(string_date_time())
+    return jsonify(string_date_time(),get_live(),record_live())
 
 @app.route("/api/record", methods=["GET", "POST"])
 def api_record():
