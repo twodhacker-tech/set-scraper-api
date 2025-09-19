@@ -143,18 +143,20 @@ def api_all():
     """
     Endpoint to return live data, daily, and history
     """
-    # Load live, daily and history data
+    # Load live, daily, and history data
     live = get_live().get("live", {})
     daily = load_daily()
     history = load_history()
 
-    # Return all data in JSON format
-    return jsonify({
+    # Ensure the response is a single object
+    response = {
         "live": live,
         "daily": daily,
         "history": history,
-        "server_time": string_date_time()
-    })
+        "server_time": string_date_time()  # Include the server time as well
+    }
+
+    return jsonify(response)
 
 @app.route("/api/daily")
 def api_daily():
