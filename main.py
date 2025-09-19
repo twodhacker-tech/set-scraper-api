@@ -103,8 +103,6 @@ return jsonify(record_live())
 @app.route("/")
 def root():
 return jsonify({
-    string_date_time(),
-    get_live(),
     save_data()
 })
 
