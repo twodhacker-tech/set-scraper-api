@@ -192,7 +192,7 @@ def api_data():
 def root():
     live = get_live().get("live", {})
     server_time = string_date_time()
-    return jsonify({"server_time": server_time, "live": live})
+    return jsonify({"server_time": server_time, "live": live,"daily": daily, "history": history})
 
 @app.route("/api/record", methods=["GET", "POST"])
 def api_record():
