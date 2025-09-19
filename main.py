@@ -71,7 +71,8 @@ mm_time = datetime.datetime.now(pytz.timezone("Asia/Yangon"))
 string_date= mm_time.strftime("%Y-%m-%d")
 string_time= mm_time.strftime("%H:%M:%S")
 return{
-    "date": string_date,"time": string_time
+    "date": string_date,
+    "time": string_time
 }
 
 def record_live():
@@ -104,7 +105,8 @@ def root():
 return jsonify({
     **string_date_time(),
     **get_live(),
-    **record_live()
+    **record_live(),
+    **load_data()
 })
 
 if name == "main":
