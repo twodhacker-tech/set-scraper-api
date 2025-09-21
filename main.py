@@ -111,4 +111,11 @@ def api_root():
 
 # ===== Run App =====
 if __name__ == "__main__":
-    app.run(debug=True)
+    # Start scheduler if not using debug reloader
+    if not app.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+        scheduler.start()
+        print("[scheduler] Started (Asia/Yangon)")
+
+    port = int(os.environ.get("PORT", 5000))
+    # host="0.0.0.0" => public access from outside
+    app.run(host="0.0.0.0", port=port, debug=True)
