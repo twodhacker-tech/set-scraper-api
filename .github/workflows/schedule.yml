@@ -1,4 +1,4 @@
-name: Fetch SET Data
+name: Fetch SET Data 
 
 on:
   schedule:
