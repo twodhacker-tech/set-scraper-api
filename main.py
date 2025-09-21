@@ -140,6 +140,7 @@ yangon_tz = pytz.timezone("Asia/Yangon")
 scheduler = BackgroundScheduler(timezone=yangon_tz)
 
 scheduler.add_job(lambda: record_live(), 'cron', hour=12, minute=1, id="save_am", max_instances=1)
+scheduler.add_job(record_live, 'interval', minutes=1)
 scheduler.add_job(lambda: record_live(), 'cron', hour=16, minute=30, id="save_pm", max_instances=1)
 
 import atexit
