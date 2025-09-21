@@ -1,195 +1,114 @@
-import atexit
+import json
+import os
 import datetime
 import pytz
-import os
-import time
 import requests
 from bs4 import BeautifulSoup
 from flask import Flask, jsonify
 from apscheduler.schedulers.background import BackgroundScheduler
-import yaml
 
 app = Flask(__name__)
 
-# ---------------------- File Names ----------------------
-DAILY_FILE = "DailyResult.yml"
-HISTORY_FILE = "HistoryResult.yml"
+# ===== File Paths =====
+BASE_DIR = os.path.dirname(__file__)  # main.py ရှိနေရာ
+DATA_FILE_DAILY = os.path.join(BASE_DIR, "DailyResult.json")
+DATA_FILE_HISTORY = os.path.join(BASE_DIR, "HistoryResult.json")
 
-# ---------------------- Helpers: load/save YAML ----------------------
-def load_daily():
+# ===== Helper Functions =====
+def load_json(path):
     try:
-        with open(DAILY_FILE, "r") as f:
-            data = yaml.safe_load(f)
-            if data is None:
-                data = {"date": "--", "time": "--", "Am": {}, "Pm": {}}
-            return data
-    except Exception as e:
-        print(f"[load_daily] {e}")
-        return {"date": "--", "time": "--", "Am": {}, "Pm": {}}
-
-def save_daily(data):
-    try:
-        with open(DAILY_FILE, "w") as f:
-            yaml.safe_dump(data, f, sort_keys=False, allow_unicode=True)
-    except Exception as e:
-        print(f"[save_daily] {e}")
-
-def load_history():
-    try:
-        with open(HISTORY_FILE, "r") as f:
-            data = yaml.safe_load(f)
-            if data is None:
-                data = {}
-            return data
-    except Exception as e:
-        print(f"[load_history] {e}")
+        with open(path, "r") as f:
+            return json.load(f)
+    except:
         return {}
 
-def save_history(date_str, period, live):
-    try:
-        history = load_history()
-        if date_str not in history:
-            history[date_str] = {}
-        history[date_str][period] = live
-        with open(HISTORY_FILE, "w") as f:
-            yaml.safe_dump(history, f, sort_keys=False, allow_unicode=True)
-    except Exception as e:
-        print(f"[save_history] {e}")
+def save_json(path, data):
+    with open(path, "w") as f:
+        json.dump(data, f, indent=2)
 
-# ---------------------- Scraping / Live ----------------------
-def get_live():
-    url = "https://www.set.or.th/en/market/product/stock/overview"
-    fetched_at = int(time.time())
-    try:
-        resp = requests.get(url, timeout=10)
-        resp.raise_for_status()
-    except Exception as e:
-        return {"live": {"twod": "", "set": "", "value": "", "fetched_at": fetched_at, "error": f"request_error: {e}"}}
+def get_myanmar_time():
+    tz = pytz.timezone("Asia/Yangon")
+    now = datetime.datetime.now(tz)
+    return now.strftime("%Y-%m-%d"), now.strftime("%H:%M:%S")
 
-    soup = BeautifulSoup(resp.text, "html.parser")
-    try:
-        tables = soup.find_all("table")
-        table = tables[1]  # site structure dependent
-        divs = table.find_all("div")
-        set_index = divs[4]
-        value_index = divs[6]
+# ===== Scraper Function =====
+def fetch_live():
+    # ဒီနေရာမှာ သင်ရဲ့ scraping logic ထည့်ရမယ် (demo အတွက် fake data သုံးထား)
+    tz = pytz.timezone("Asia/Yangon")
+    now = datetime.datetime.now(tz)
 
-        live_set = set_index.get_text(strip=True)
-        live_value = value_index.get_text(strip=True)
+    live_data = {
+        "fetched_at": int(now.timestamp()),
+        "set": "1,297.21",
+        "twod": str(now.second % 100).zfill(2),
+        "value": "29,497.68"
+    }
+    return live_data
 
-        clean_set = live_set.replace(",", "")
-        formatted = "{:.2f}".format(float(clean_set))
-        top = formatted[-1]
+# ===== Save Functions =====
+def save_daily_record():
+    today, current_time = get_myanmar_time()
+    data = load_json(DATA_FILE_DAILY)
+    data[today] = {
+        "date": today,
+        "time": current_time,
+        "live": fetch_live()
+    }
+    save_json(DATA_FILE_DAILY, data)
+    print(f"[Daily] Saved at {current_time}")
 
-        clean_value = live_value.replace(",", "")
-        if clean_value in ["", "-"]:
-            clean_value = "0.00"
-        last = str(int(float(clean_value)))[-1]
+def save_history_record():
+    today, current_time = get_myanmar_time()
+    data = load_json(DATA_FILE_HISTORY)
 
-        twod_live = f"{top}{last}"
+    if today not in data:
+        data[today] = []
 
-        return {"live": {"twod": twod_live, "set": live_set, "value": live_value, "fetched_at": fetched_at}}
-    except Exception as e:
-        return {"live": {"twod": "", "set": "", "value": "", "fetched_at": fetched_at, "error": f"parse_error: {e}"}}
+    data[today].append({
+        "date": today,
+        "time": current_time,
+        "live": fetch_live()
+    })
+    save_json(DATA_FILE_HISTORY, data)
+    print(f"[History] Saved at {current_time}")
 
-# ---------------------- Server time ----------------------
-def string_date_time():
-    now = datetime.datetime.now(pytz.timezone("Asia/Yangon"))
-    return {"date": now.strftime("%Y-%m-%d"), "time": now.strftime("%H:%M:%S")}
+# ===== Scheduler Setup =====
+scheduler = BackgroundScheduler()
 
-# ---------------------- Record Live Data ----------------------
-def record_live():
-    now = datetime.datetime.now(pytz.timezone("Asia/Yangon"))
-    string_date = now.strftime("%Y-%m-%d")
-    string_time = now.strftime("%H:%M:%S")
+# 12:01 MMT
+scheduler.add_job(save_daily_record, "cron", hour=12, minute=1, timezone="Asia/Yangon")
+scheduler.add_job(save_history_record, "cron", hour=12, minute=1, timezone="Asia/Yangon")
 
-    daily = load_daily()
-    live_obj = get_live().get("live", {})
-    daily["date"] = string_date
-    daily["time"] = string_time
+# 16:30 MMT
+scheduler.add_job(save_daily_record, "cron", hour=16, minute=30, timezone="Asia/Yangon")
+scheduler.add_job(save_history_record, "cron", hour=16, minute=30, timezone="Asia/Yangon")
 
-    result = {"date": string_date, "time": string_time, "saved": False, "period": None, "live": live_obj}
+scheduler.start()
 
-    try:
-        if string_time == "12:01:00":
-            daily["Am"] = live_obj
-            save_daily(daily)
-            save_history(string_date, "Am", live_obj)
-            result.update({"saved": True, "period": "Am"})
-            print(f"[record_live] Saved AM for {string_date} at {string_time}")
-            return result
+# ===== API Endpoints =====
+@app.route("/live")
+def api_live():
+    return jsonify(fetch_live())
 
-        if string_time == "16:30:00":
-            daily["Pm"] = live_obj
-            save_daily(daily)
-            save_history(string_date, "Pm", live_obj)
-            result.update({"saved": True, "period": "Pm"})
-            print(f"[record_live] Saved PM for {string_date} at {string_time}")
-            return result
-
-        save_daily(daily)  # update daily meta
-        print(f"[record_live] Updated daily meta for {string_date} at {string_time}")
-        return result
-    except Exception as e:
-        print(f"[record_live] Error: {e}")
-        result["error"] = str(e)
-        return result
-
-# ---------------------- Scheduler ----------------------
-yangon_tz = pytz.timezone("Asia/Yangon")
-scheduler = BackgroundScheduler(timezone=yangon_tz)
-
-scheduler.add_job(lambda: record_live(), 'cron', hour=12, minute=1, id="save_am", max_instances=1)
-# အချိန်စမ်းသပ်ဖို့ interval 1 minute job ထည့်
-scheduler.add_job(record_live, 'interval', minutes=1, id="test_job")
-scheduler.add_job(lambda: record_live(), 'cron', hour=16, minute=30, id="save_pm", max_instances=1)
-
-import atexit
-atexit.register(lambda: scheduler.shutdown(wait=False))
-
-# ---------------------- API Routes ----------------------
-@app.route("/api/all")
-def api_all():
-    live = get_live().get("live", {})
-    daily = load_daily()
-    history = load_history()
-    server_time = string_date_time()
-    return jsonify({"live": live, "daily": daily, "history": history, "server_time": server_time})
-
-@app.route("/api/daily")
+@app.route("/daily")
 def api_daily():
-    return jsonify({"daily": load_daily()})
+    return jsonify(load_json(DATA_FILE_DAILY))
 
-@app.route("/api/history")
+@app.route("/history")
 def api_history():
-    return jsonify({"history": load_history()})
-
-@app.route("/api/data")
-def api_data():
-    live = get_live().get("live", {})
-    daily = load_daily()
-    history = load_history()
-    server_time = string_date_time()
-    return jsonify({"server_time": server_time, "live": live, "daily": daily, "history": history})
+    return jsonify(load_json(DATA_FILE_HISTORY))
 
 @app.route("/")
-def root():
-    live = get_live().get("live", {})
-    daily = load_daily()
-    history = load_history()
-    server_time = string_date_time()
-    return jsonify({"server_time": server_time, "live": live, "daily": daily, "history": history})
+def api_root():
+    today, current_time = get_myanmar_time()
+    return jsonify({
+        "date": today,
+        "time": current_time,
+        "live": fetch_live(),
+        "daily": load_json(DATA_FILE_DAILY),
+        "history": load_json(DATA_FILE_HISTORY)
+    })
 
-@app.route("/api/record", methods=["GET", "POST"])
-def api_record():
-    res = record_live()
-    return jsonify(res)
-
-# ---------------------- Run Server ----------------------
+# ===== Run App =====
 if __name__ == "__main__":
-    if not app.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
-        scheduler.start()
-        print("[scheduler] Started (Asia/Yangon)")
-
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(debug=True)
