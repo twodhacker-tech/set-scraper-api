@@ -2,8 +2,9 @@ name: Fetch SET Data
 
 on:
   schedule:
-    - cron: "31 5 * * *"   # 12:01 MMT (MMT=UTC+6:30 => 05:31 UTC)
-    - cron: "0 10 * * *"   # 16:30 MMT (10:00 UTC)
+    - cron: "30 2 * * *"   # 09:00 MMT clear
+    - cron: "31 5 * * *"   # 12:01 MMT fetch
+    - cron: "0 10 * * *"   # 16:30 MMT fetch
   workflow_dispatch:
 
 jobs:
@@ -11,18 +12,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10
-
+          python-version: "3.10"
       - name: Install dependencies
         run: pip install -r requirements.txt
-
       - name: Run scraper
         run: python main.py
-
       - name: Commit & Push
         run: |
           git config user.name "github-actions"
