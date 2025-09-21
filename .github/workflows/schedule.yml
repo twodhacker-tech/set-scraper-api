@@ -2,15 +2,13 @@ name: Fetch SET Data
 
 on:
   schedule:
-    - cron: "30 2 * * *"   # 09:00 MMT clear
-    - cron: "31 5 * * *"   # 12:01 MMT fetch
-    - cron: "0 10 * * *"   # 16:30 MMT fetch
+    - cron: "31 5 * * *"   # 12:01 MMT (MMT=UTC+6:30 => 05:31 UTC)
+    - cron: "0 10 * * *"   # 16:30 MMT (10:00 UTC)
   workflow_dispatch:
 
 jobs:
   fetch-set:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
 
@@ -23,18 +21,12 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Run scraper
-        # scraper-only: record_live() call, no Flask server
-        run: python - <<'EOF'
-import sys
-sys.path.append(".")
-from main import record_live
-record_live()
-EOF
+        run: python main.py
 
       - name: Commit & Push
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add DailyResult.yml HistoryResult.yml
-          git diff --cached --quiet || git commit -m "Update Daily/History results"
+          git add DailyResult.json HistoryResult.json
+          git commit -m "Update results"
           git push
