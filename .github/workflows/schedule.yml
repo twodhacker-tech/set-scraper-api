@@ -10,20 +10,31 @@ on:
 jobs:
   fetch-set:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: 3.10
+
       - name: Install dependencies
         run: pip install -r requirements.txt
+
       - name: Run scraper
-        run: python main.py
+        # scraper-only: record_live() call, no Flask server
+        run: python - <<'EOF'
+import sys
+sys.path.append(".")
+from main import record_live
+record_live()
+EOF
+
       - name: Commit & Push
         run: |
           git config user.name "github-actions"
           git config user.email "github-actions@github.com"
-          git add ResultsHistory.json
-          git commit -m "Update ResultsHistory.json"
+          git add DailyResult.yml HistoryResult.yml
+          git diff --cached --quiet || git commit -m "Update Daily/History results"
           git push
