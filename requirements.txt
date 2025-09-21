@@ -4,3 +4,4 @@ beautifulsoup4
 pytz
 gunicorn
 apscheduler
+pyyaml
