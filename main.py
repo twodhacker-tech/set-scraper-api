@@ -6,36 +6,25 @@ import requests
 from bs4 import BeautifulSoup
 from flask import Flask, jsonify
 from apscheduler.schedulers.background import BackgroundScheduler
-from threading import Lock
 
 app = Flask(__name__)
 
 # ===== File Paths =====
-BASE_DIR = os.path.dirname(__file__)
+BASE_DIR = os.path.dirname(__file__)  # main.py ရှိနေရာ
 DATA_FILE_DAILY = os.path.join(BASE_DIR, "DailyResult.json")
 DATA_FILE_HISTORY = os.path.join(BASE_DIR, "HistoryResult.json")
-
-file_lock = Lock()
 
 # ===== Helper Functions =====
 def load_json(path):
     try:
-        with file_lock:
-            if not os.path.exists(path):
-                return {}
-            with open(path, "r") as f:
-                return json.load(f)
-    except Exception as e:
-        print(f"Error loading {path}: {e}")
+        with open(path, "r") as f:
+            return json.load(f)
+    except:
         return {}
 
 def save_json(path, data):
-    try:
-        with file_lock:
-            with open(path, "w") as f:
-                json.dump(data, f, indent=2)
-    except Exception as e:
-        print(f"Error saving {path}: {e}")
+    with open(path, "w") as f:
+        json.dump(data, f, indent=2)
 
 def get_myanmar_time():
     tz = pytz.timezone("Asia/Yangon")
@@ -44,9 +33,10 @@ def get_myanmar_time():
 
 # ===== Scraper Function =====
 def fetch_live():
+    # ဒီနေရာမှာ သင်ရဲ့ scraping logic ထည့်ရမယ် (demo အတွက် fake data သုံးထား)
     tz = pytz.timezone("Asia/Yangon")
     now = datetime.datetime.now(tz)
-    # TODO: Real scraping logic here
+
     live_data = {
         "fetched_at": int(now.timestamp()),
         "set": "1,297.21",
@@ -70,8 +60,10 @@ def save_daily_record():
 def save_history_record():
     today, current_time = get_myanmar_time()
     data = load_json(DATA_FILE_HISTORY)
+
     if today not in data:
         data[today] = []
+
     data[today].append({
         "date": today,
         "time": current_time,
@@ -90,6 +82,8 @@ scheduler.add_job(save_history_record, "cron", hour=12, minute=1, timezone="Asia
 # 16:30 MMT
 scheduler.add_job(save_daily_record, "cron", hour=16, minute=30, timezone="Asia/Yangon")
 scheduler.add_job(save_history_record, "cron", hour=16, minute=30, timezone="Asia/Yangon")
+
+scheduler.start()
 
 # ===== API Endpoints =====
 @app.route("/live")
@@ -117,9 +111,4 @@ def api_root():
 
 # ===== Run App =====
 if __name__ == "__main__":
-    if not app.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
-        scheduler.start()
-        print("[scheduler] Started (Asia/Yangon)")
-
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
+    app.run(debug=True)
