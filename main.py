@@ -23,7 +23,7 @@ def load_daily():
             return json.load(f)
     except Exception as e:
         print(f"[load_daily] Error: {e}")
-        return {"date": "--", "time": "--", "Am": {}, "Pm": {}}
+        return {"Am": {}, "Pm": {}}
 
 def save_daily(data):
     try:
@@ -160,8 +160,8 @@ def root():
     return jsonify({
         "server_time": string_date_time(),
         "live": get_live().get("live", {}),
-        load_daily(),
-        load_history()
+        "daily":load_daily(),
+        "history":load_history()
     })
 
 # ---------------------- Run Server ----------------------
