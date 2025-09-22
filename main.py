@@ -9,6 +9,7 @@ from bs4 import BeautifulSoup
 from flask import Flask, jsonify
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.schedulers.base import SchedulerAlreadyRunningError
+from filelock import FileLock
 
 app = Flask(__name__)
 
@@ -19,7 +20,8 @@ DATA_FILE_HISTORY = os.path.join(os.path.dirname(__file__), "HistoryResult.json"
 # ---------------------- Helpers: load/save ----------------------
 def load_daily():
     try:
-        with open(DATA_FILE_DAILY, "r") as f:
+        lock = FileLock(DATA_FILE_DAILY + ".lock")
+        with lock, open(DATA_FILE_DAILY, "r") as f:
             return json.load(f)
     except Exception as e:
         print(f"[load_daily] Error: {e}")
@@ -27,14 +29,16 @@ def load_daily():
 
 def save_daily(data):
     try:
-        with open(DATA_FILE_DAILY, "w") as f:
+        lock = FileLock(DATA_FILE_DAILY + ".lock")
+        with lock, open(DATA_FILE_DAILY, "w") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
     except Exception as e:
         print(f"[save_daily] Error: {e}")
 
 def load_history():
     try:
-        with open(DATA_FILE_HISTORY, "r") as f:
+        lock = FileLock(DATA_FILE_HISTORY + ".lock")
+        with lock, open(DATA_FILE_HISTORY, "r") as f:
             return json.load(f)
     except Exception as e:
         print(f"[load_history] Error: {e}")
@@ -42,12 +46,14 @@ def load_history():
 
 def save_history(date_str, period, live):
     try:
-        history = load_history()
-        if date_str not in history:
-            history[date_str] = {}
-        history[date_str][period] = live
-        with open(DATA_FILE_HISTORY, "w") as f:
-            json.dump(history, f, indent=2, ensure_ascii=False)
+        lock = FileLock(DATA_FILE_HISTORY + ".lock")
+        with lock:
+            history = load_history()
+            if date_str not in history:
+                history[date_str] = {}
+            history[date_str][period] = live
+            with open(DATA_FILE_HISTORY, "w") as f:
+                json.dump(history, f, indent=2, ensure_ascii=False)
     except Exception as e:
         print(f"[save_history] Error: {e}")
 
@@ -175,4 +181,4 @@ if __name__ == "__main__":
             print("[scheduler] Already running")
 
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=False)
