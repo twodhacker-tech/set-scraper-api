@@ -113,13 +113,6 @@ def record_live():
             save_history(string_date, "Pm", live_obj)
             result.update({"saved": True, "period": "Pm"})
             return result
-        
-        if string_time == "21:08:00":
-            daily["Test"] = live_obj
-            save_daily(daily)
-            save_history(string_date, "Test", live_obj)
-            result.update({"saved": True, "period": "Test"})
-            return result
 
         save_daily(daily)
         return result
@@ -137,8 +130,6 @@ def scheduled_record_wrapper(period_label):
 
 scheduler.add_job(lambda: scheduled_record_wrapper("AM"), 'cron', hour=12, minute=1, id="save_am", max_instances=1)
 scheduler.add_job(lambda: scheduled_record_wrapper("PM"), 'cron', hour=16, minute=30, id="save_pm", max_instances=1)
-scheduler.add_job(lambda: scheduled_record_wrapper("Test"), 'cron', hour=21, minute=08, id="save_pm", max_instances=2)
-
 
 atexit.register(lambda: scheduler.shutdown(wait=False))
 
