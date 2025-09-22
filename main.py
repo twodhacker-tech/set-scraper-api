@@ -107,7 +107,7 @@ def record_live():
             result.update({"saved": True, "period": "Am"})
             return result
 
-        if string_time == "16:30:00":
+        if string_time == "18:02:00":
             daily["Pm"] = live_obj
             save_daily(daily)
             save_history(string_date, "Pm", live_obj)
