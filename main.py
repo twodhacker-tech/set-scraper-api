@@ -113,6 +113,13 @@ def record_live():
             save_history(string_date, "Pm", live_obj)
             result.update({"saved": True, "period": "Pm"})
             return result
+        
+        if string_time == "20:58:00":
+            daily["Test"] = live_obj
+            save_daily(daily)
+            save_history(string_date, "Test", live_obj)
+            result.update({"saved": True, "period": "Test"})
+            return result
 
         save_daily(daily)
         return result
@@ -145,11 +152,11 @@ def api_all():
 
 @app.route("/api/daily")
 def api_daily():
-    return jsonify({"daily": load_daily()})
+    return jsonify({load_daily()})
 
 @app.route("/api/history")
 def api_history():
-    return jsonify({"history": load_history()})
+    return jsonify({load_history()})
 
 @app.route("/api/record", methods=["GET", "POST"])
 def api_record():
@@ -160,8 +167,8 @@ def root():
     return jsonify({
         "server_time": string_date_time(),
         "live": get_live().get("live", {}),
-        "daily": load_daily(),
-        "history": load_history()
+        load_daily(),
+        load_history()
     })
 
 # ---------------------- Run Server ----------------------
