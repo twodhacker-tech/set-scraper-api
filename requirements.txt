@@ -5,3 +5,4 @@ pytz
 gunicorn
 apscheduler
 pyyaml
+filelock>=3.0.0
