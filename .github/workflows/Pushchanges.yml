@@ -1,3 +1,0 @@
-- name: Push changes
-  run: git push https://x-access-token:${{ secrets.TICKET_SC}}@github.com/<twodhacker-tech
->/<set-scraper-api>.git
